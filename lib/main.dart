@@ -8,6 +8,7 @@ import 'home_page.dart';
 FirebaseDatabase database = FirebaseDatabase.instance;
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -24,7 +25,13 @@ class MyApp extends StatelessWidget {
       title: 'Workout logger',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
-              .copyWith(secondary: Colors.purple[300])),
+              .copyWith(secondary: Colors.purple[300]),
+          textTheme: const TextTheme(
+            headline6: TextStyle(fontSize: 24.0),
+            bodyText1: TextStyle(fontSize: 18.0),
+            bodyText2: TextStyle(fontSize: 18.0),
+            button: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
+          )),
       // Show the app once firebase has finished initializing
       home: FutureBuilder(
           future: _fbApp,

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'exercise_list.dart';
+import 'date_scroll.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
 
@@ -26,16 +29,10 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          // Column is a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[],
-        ),
-      ),
+      body: Column(children: const [
+        DateScroll(),
+        ExerciseList(),
+      ]),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -59,7 +56,7 @@ class _HomePageState extends State<HomePage> {
             _navBarIndex = index;
           });
           if (index == 0) {
-            Navigator.pushNamed(context, '/');
+            // Navigator.pushNamed(context, '/');
           } else if (index == 1) {
             // Navigator.pushNamed(context, '/progression');
           } else if (index == 2) {

@@ -2,68 +2,60 @@ import 'package:flutter/material.dart';
 
 import 'exercise_list.dart';
 import 'date_scroll.dart';
+import 'nav_bar.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int _navBarIndex = 0;
+class _HomePageState extends State<HomePage> with RestorationMixin {
+  @override
+  String? get restorationId => "home_page";
+  final RestorableDateTime _selectedDate = RestorableDateTime(DateTime.now());
+
+  void _dateAdded() {
+    setState(() {
+      _selectedDate.value = _selectedDate.value.add(const Duration(days: 1));
+    });
+  }
+
+  void _dateSubtracted() {
+    setState(() {
+      _selectedDate.value =
+          _selectedDate.value.subtract(const Duration(days: 1));
+    });
+  }
+
+  void _dateChanged(DateTime date) {
+    setState(() {
+      _selectedDate.value = date;
+    });
+  }
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_selectedDate, 'selected_date');
+  }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Column(children: const [
-        DateScroll(),
-        ExerciseList(),
-      ]),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.auto_graph),
-            label: 'Progression',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Calendar',
-          ),
-        ],
-        currentIndex: _navBarIndex,
-        selectedItemColor: Colors.purple[500],
-        unselectedItemColor: Colors.purple[300],
-        onTap: (int index) {
-          setState(() {
-            _navBarIndex = index;
-          });
-          if (index == 0) {
-            // Navigator.pushNamed(context, '/');
-          } else if (index == 1) {
-            // Navigator.pushNamed(context, '/progression');
-          } else if (index == 2) {
-            // Navigator.pushNamed(context, '/calendar');
-          }
-        },
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        appBar: AppBar(
+          title: const Text("Workout Tracker"),
+        ),
+        body: Column(children: [
+          DateScroll(
+              date: _selectedDate.value,
+              dateAdded: _dateAdded,
+              dateSubtracted: _dateSubtracted),
+          const ExerciseList(),
+        ]),
+        bottomNavigationBar:
+            NavBar(date: _selectedDate.value, dateChanged: _dateChanged));
   }
 }

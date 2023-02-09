@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
               print('You have an error! ${snapshot.error.toString()}');
               return const Text('Something went wrong');
             } else if (snapshot.hasData) {
-              return const HomePage(title: 'Workout logger');
+              return const HomePage();
             } else {
               return const Center(
                 child: CircularProgressIndicator(),

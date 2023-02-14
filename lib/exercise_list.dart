@@ -12,9 +12,12 @@ class ExerciseList extends StatefulWidget {
 
 class _ExerciseListState extends State<ExerciseList> {
   List<ExerciseEntry> exerciseList = [
-    ExerciseEntry(name: 'Bench press', sets: '4', reps: '8', weight: '100'),
-    ExerciseEntry(name: 'Barbell Row', sets: '3', reps: '10', weight: '120'),
-    ExerciseEntry(name: 'Overhead Press', sets: '3', reps: '8', weight: '75'),
+    const ExerciseEntry(
+        name: 'Bench press', sets: '4', reps: '8', weight: '100'),
+    const ExerciseEntry(
+        name: 'Barbell Row', sets: '3', reps: '10', weight: '120'),
+    const ExerciseEntry(
+        name: 'Overhead Press', sets: '3', reps: '8', weight: '75'),
   ];
 
   addExercise(ExerciseEntry exercise) {
@@ -87,7 +90,7 @@ class _ExerciseListState extends State<ExerciseList> {
                       MediaQuery.of(context).size.width * 0.1,
                       10),
                 ),
-                child: exerciseList[index].buildCard(context),
+                child: exerciseList[index].build(context),
               );
             },
           ),

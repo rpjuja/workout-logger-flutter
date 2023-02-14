@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 
-class ExerciseEntry {
+class ExerciseEntry extends StatelessWidget {
   final String name;
   final String sets;
   final String reps;
   final String weight;
 
-  ExerciseEntry(
-      {required this.name,
+  const ExerciseEntry(
+      {Key? key,
+      required this.name,
       required this.sets,
       required this.reps,
-      required this.weight});
+      required this.weight})
+      : super(key: key);
 
-  Widget buildCard(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.1, 0,
           MediaQuery.of(context).size.width * 0.1, 10),
@@ -26,26 +29,20 @@ class ExerciseEntry {
                 child: Text(name),
               )),
         ),
-        SizedBox(
+        Container(
           width: MediaQuery.of(context).size.width * 0.1,
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(sets),
-          ),
+          alignment: Alignment.center,
+          child: Text(sets),
         ),
-        SizedBox(
+        Container(
           width: MediaQuery.of(context).size.width * 0.1,
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(reps),
-          ),
+          alignment: Alignment.center,
+          child: Text(reps),
         ),
-        SizedBox(
+        Container(
           width: MediaQuery.of(context).size.width * 0.1,
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(weight),
-          ),
+          alignment: Alignment.center,
+          child: Text(weight),
         ),
       ]),
     );

@@ -23,6 +23,7 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   final DatabaseReference _workoutRef =
       FirebaseDatabase.instance.ref("/workouts/");
   late StreamSubscription<DatabaseEvent> _workoutSubscription;
+
   FirebaseException? _error;
 
   @override
@@ -33,12 +34,15 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
     listenForChanges();
   }
 
-  // Update the notes if user changes the date
+  // Fetch the notes again if user changes the date
+  // also call listenForChanges again to change the subscription date
   @override
   void didUpdateWidget(covariant oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedDate != oldWidget.selectedDate) {
       getWorkoutData();
+      _workoutSubscription.cancel();
+      listenForChanges();
     }
   }
 
@@ -49,14 +53,15 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   }
 
   void listenForChanges() async {
+    final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
+
     _workoutSubscription =
-        _workoutRef.child("${widget.userId}/").onValue.listen(
+        _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
       (event) {
         Map<String, dynamic> notes =
             Map<String, dynamic>.from(event.snapshot.value as Map);
-        final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
         setState(() {
-          _notesController.text = notes[queryDate]['notes'];
+          _notesController.text = notes['notes'];
           _error = null;
         });
       },

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workout_logger_app/exercise_entry.dart';
+import 'package:workout_logger_app/workout_widgets/exercise_entry.dart';
 
 class AddExercise extends StatefulWidget {
   final Function(ExerciseEntry) notifyParent;
@@ -14,6 +14,7 @@ class _AddExerciseState extends State<AddExercise> {
   final _sets = TextEditingController();
   final _reps = TextEditingController();
   final _weight = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   isNumeric(string) => num.tryParse(string) != null;
 
@@ -26,8 +27,6 @@ class _AddExerciseState extends State<AddExercise> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       buttonPadding: const EdgeInsets.all(30.0),

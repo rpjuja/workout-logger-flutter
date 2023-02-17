@@ -10,7 +10,7 @@ class WorkoutNotes extends StatefulWidget {
       {Key? key, required this.userId, required this.selectedDate})
       : super(key: key);
 
-  final int userId;
+  final String userId;
   final DateTime selectedDate;
 
   @override
@@ -31,7 +31,6 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   void initState() {
     super.initState();
     _notesFocusNode = FocusNode();
-
     _getWorkoutData();
     _listenForChanges();
   }
@@ -52,7 +51,6 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   void dispose() {
     super.dispose();
     _notesFocusNode.dispose();
-
     _workoutSubscription.cancel();
   }
 

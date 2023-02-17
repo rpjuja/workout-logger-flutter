@@ -1,28 +1,62 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:workout_logger_app/workout_widgets/exercise_entry.dart';
+import 'package:intl/intl.dart';
 
 class AddExercise extends StatefulWidget {
-  final Function(ExerciseEntry) notifyParent;
-  const AddExercise({Key? key, required this.notifyParent}) : super(key: key);
+  const AddExercise(
+      {Key? key, required this.userId, required this.selectedDate})
+      : super(key: key);
+
+  final String userId;
+  final DateTime selectedDate;
 
   @override
   State<AddExercise> createState() => _AddExerciseState();
 }
 
 class _AddExerciseState extends State<AddExercise> {
+  final FirebaseDatabase _database = FirebaseDatabase.instance;
+  final DatabaseReference _workoutRef =
+      FirebaseDatabase.instance.ref("/exercises/");
+
+  FirebaseException? _error;
+
   final _name = TextEditingController();
   final _sets = TextEditingController();
   final _reps = TextEditingController();
   final _weight = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  isNumeric(string) => num.tryParse(string) != null;
+  bool _isNumeric(string) => num.tryParse(string) != null;
 
-  clearTextFields() {
+  void _clearTextFields() {
     _name.clear();
     _sets.clear();
     _reps.clear();
     _weight.clear();
+  }
+
+  void _addExercise() async {
+    final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
+
+    var exerciseId =
+        _workoutRef.child('/${widget.userId}/$queryDate/').push().key;
+    try {
+      await _workoutRef.child("${widget.userId}/$queryDate/$exerciseId").set({
+        'name': _name.text,
+        'sets': _sets.text,
+        'reps': _reps.text,
+        'weight': _weight.text,
+      });
+      print('Connected to the database and wrote data');
+      _clearTextFields();
+      Navigator.of(context).pop();
+    } on FirebaseException catch (err) {
+      setState(() {
+        _error = err;
+      });
+    }
   }
 
   @override
@@ -70,7 +104,7 @@ class _AddExerciseState extends State<AddExercise> {
                                   child: TextFormField(
                                     controller: _sets,
                                     validator: (value) {
-                                      if (value == null || !isNumeric(value)) {
+                                      if (value == null || !_isNumeric(value)) {
                                         return 'Please enter a number';
                                       }
                                       return null;
@@ -89,7 +123,7 @@ class _AddExerciseState extends State<AddExercise> {
                                   child: TextFormField(
                                     controller: _reps,
                                     validator: (value) {
-                                      if (value == null || !isNumeric(value)) {
+                                      if (value == null || !_isNumeric(value)) {
                                         return 'Please enter a number';
                                       }
                                       return null;
@@ -108,7 +142,7 @@ class _AddExerciseState extends State<AddExercise> {
                                   child: TextFormField(
                                     controller: _weight,
                                     validator: (value) {
-                                      if (value == null || !isNumeric(value)) {
+                                      if (value == null || !_isNumeric(value)) {
                                         return 'Please enter a number';
                                       }
                                       return null;
@@ -122,26 +156,27 @@ class _AddExerciseState extends State<AddExercise> {
                                 ),
                               ],
                             ),
+                            _error != null
+                                ? Container(
+                                    child: Text(
+                                        "Error when adding exercise: ${_error!.message}}}"),
+                                    padding: const EdgeInsets.only(top: 20.0),
+                                  )
+                                : Container(),
                           ],
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => {
-                              clearTextFields(),
+                              _clearTextFields(),
                               Navigator.of(context).pop(),
                             },
                             child: const Text('Cancel'),
                           ),
-                          TextButton(
+                          ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                widget.notifyParent(ExerciseEntry(
-                                    name: _name.text,
-                                    sets: _sets.text,
-                                    reps: _reps.text,
-                                    weight: _weight.text));
-                                clearTextFields();
-                                Navigator.of(context).pop();
+                                _addExercise();
                               }
                             },
                             child: const Text('Add'),

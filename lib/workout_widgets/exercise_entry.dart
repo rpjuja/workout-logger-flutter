@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ExerciseEntry extends StatelessWidget {
+  final String id;
   final String name;
   final String sets;
   final String reps;
@@ -8,6 +9,7 @@ class ExerciseEntry extends StatelessWidget {
 
   const ExerciseEntry(
       {Key? key,
+      required this.id,
       required this.name,
       required this.sets,
       required this.reps,

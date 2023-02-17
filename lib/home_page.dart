@@ -20,8 +20,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with RestorationMixin {
   @override
   String? get restorationId => "home_page";
-  final _userId = 1;
-  late DatabaseReference _userRef;
+  final String _userId = '1';
+  late final FirebaseDatabase _database;
+  late final DatabaseReference _userRef;
 
   final RestorableDateTime _selectedDate = RestorableDateTime(DateTime.now());
 
@@ -34,13 +35,13 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
   }
 
   Future<void> init() async {
-    final database = FirebaseDatabase.instance;
+    _database = FirebaseDatabase.instance;
     _userRef = FirebaseDatabase.instance.ref("/users/");
 
     // Enable disk persistence on mobile devices
     if (!kIsWeb) {
-      database.setPersistenceEnabled(true);
-      database.setPersistenceCacheSizeBytes(10000000);
+      _database.setPersistenceEnabled(true);
+      _database.setPersistenceCacheSizeBytes(10000000);
     }
 
     _getUserData();

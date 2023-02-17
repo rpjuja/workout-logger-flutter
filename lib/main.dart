@@ -24,14 +24,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Workout logger',
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
-              .copyWith(secondary: Colors.purple[300]),
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
+              .copyWith(secondary: Colors.deepPurple[300]),
           textTheme: const TextTheme(
             headline6: TextStyle(fontSize: 24.0),
-            bodyText1: TextStyle(fontSize: 18.0),
+            bodyText1: TextStyle(fontSize: 20.0),
             bodyText2: TextStyle(fontSize: 18.0),
             button: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
-          )),
+          )).copyWith(
+        dividerColor: Colors.deepPurple[200],
+      ),
       // Show the app once firebase has finished initializing
       home: FutureBuilder(
           future: _fbApp,

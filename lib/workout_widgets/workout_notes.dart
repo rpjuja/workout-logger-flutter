@@ -19,6 +19,7 @@ class WorkoutNotes extends StatefulWidget {
 
 class _WorkoutNotesState extends State<WorkoutNotes> {
   final TextEditingController _notesController = TextEditingController();
+  late FocusNode _notesFocusNode;
 
   final DatabaseReference _workoutRef =
       FirebaseDatabase.instance.ref("/workouts/");
@@ -29,9 +30,10 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   @override
   void initState() {
     super.initState();
+    _notesFocusNode = FocusNode();
 
-    getWorkoutData();
-    listenForChanges();
+    _getWorkoutData();
+    _listenForChanges();
   }
 
   // Fetch the notes again if user changes the date
@@ -40,30 +42,38 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   void didUpdateWidget(covariant oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedDate != oldWidget.selectedDate) {
-      getWorkoutData();
+      _getWorkoutData();
       _workoutSubscription.cancel();
-      listenForChanges();
+      _listenForChanges();
     }
   }
 
   @override
   void dispose() {
     super.dispose();
+    _notesFocusNode.dispose();
+
     _workoutSubscription.cancel();
   }
 
-  void listenForChanges() async {
+  void _listenForChanges() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
 
     _workoutSubscription =
         _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
       (event) {
-        Map<String, dynamic> notes =
-            Map<String, dynamic>.from(event.snapshot.value as Map);
-        setState(() {
-          _notesController.text = notes['notes'];
-          _error = null;
-        });
+        if (event.snapshot.exists) {
+          Map<String, dynamic> notes =
+              Map<String, dynamic>.from(event.snapshot.value as Map);
+          setState(() {
+            _notesController.text = notes['notes'];
+            _error = null;
+          });
+        } else {
+          setState(() {
+            _notesController.text = '';
+          });
+        }
       },
       onError: (Object o) {
         final error = o as FirebaseException;
@@ -74,7 +84,7 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
     );
   }
 
-  void getWorkoutData() async {
+  void _getWorkoutData() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
     // Read data from database
     try {
@@ -94,50 +104,73 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
           _notesController.text = '';
         });
       }
-    } catch (err) {
-      print(err);
+    } on FirebaseException catch (err) {
+      setState(() {
+        _error = err;
+      });
     }
   }
 
-  void setWorkoutData() async {
+  void _setWorkoutData() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
     try {
       await _workoutRef
           .child("${widget.userId}/$queryDate")
           .update({'notes': _notesController.text});
       print('Connected to the database and wrote data');
-    } catch (err) {
-      print(err);
+    } on FirebaseException catch (err) {
+      setState(() {
+        _error = err;
+      });
     }
+  }
+
+  void _requestFocus() {
+    setState(() {
+      FocusScope.of(context).requestFocus(_notesFocusNode);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-        title: Center(
-          child: _error == null
-              ? Text(_notesController.text)
-              : Text(
-                  'Error retrieving notes:\n${_error!.message}',
-                ),
-        ),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: TextFormField(
-              controller: _notesController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Edit notes',
-              ),
-              maxLines: 4,
-            ),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.1),
+      child: TextFormField(
+        controller: _error == null
+            ? _notesController
+            : TextEditingController(
+                text: 'Error retrieving notes:\n${_error!.message}'),
+        focusNode: _notesFocusNode,
+        onTap: _requestFocus,
+        maxLines: 4,
+        decoration: InputDecoration(
+          labelText: _notesController.text.isEmpty ? 'Add notes' : 'Notes',
+          labelStyle: TextStyle(
+              fontSize: 20,
+              color: _notesFocusNode.hasFocus
+                  ? Colors.deepPurple
+                  : Colors.deepPurple[300]),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.deepPurple[300]!),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
-          ElevatedButton(
-              onPressed: () => setWorkoutData(), child: const Text("Save")),
-          const SizedBox(
-            height: 10.0,
-          )
-        ]);
+          focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.deepPurple, width: 2),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          suffixIcon: IconButton(
+            onPressed: () => _setWorkoutData(),
+            icon: const Icon(Icons.save_alt),
+            iconSize: 30,
+            splashRadius: 20,
+            splashColor: Colors.deepPurple,
+            color: _notesFocusNode.hasFocus
+                ? Colors.deepPurple
+                : Colors.deepPurple[300],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
 
   final RestorableDateTime _selectedDate = RestorableDateTime(DateTime.now());
 
-  bool initialized = false;
+  bool _initialized = false;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
     _getUserData();
 
     setState(() {
-      initialized = true;
+      _initialized = true;
     });
   }
 
@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
         appBar: AppBar(
           title: const Text("Workout Tracker"),
         ),
-        body: !initialized
+        body: !_initialized
             ? const Center(child: CircularProgressIndicator())
             : Column(children: [
                 DateScroll(

@@ -65,7 +65,7 @@ class _ExerciseListState extends State<ExerciseList> {
                         actions: <Widget>[
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.purple),
+                                  backgroundColor: Colors.deepPurple),
                               onPressed: () => {
                                     Navigator.of(context).pop(true),
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -86,7 +86,7 @@ class _ExerciseListState extends State<ExerciseList> {
                 background: Container(
                   child: const Icon(Icons.delete),
                   decoration: const BoxDecoration(
-                      color: Colors.purple,
+                      color: Colors.deepPurple,
                       borderRadius: BorderRadius.all(Radius.circular(5))),
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.only(right: 10.0),

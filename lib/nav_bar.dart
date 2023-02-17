@@ -77,8 +77,8 @@ class _NavBarState extends State<NavBar> with RestorationMixin {
         ),
       ],
       currentIndex: _navBarIndex,
-      selectedItemColor: Colors.purple[500],
-      unselectedItemColor: Colors.purple[300],
+      selectedItemColor: Colors.deepPurple,
+      unselectedItemColor: Colors.deepPurple[300],
       onTap: (int index) {
         setState(() {
           _navBarIndex = index;

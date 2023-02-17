@@ -159,7 +159,7 @@ class _AddExerciseState extends State<AddExercise> {
                             _error != null
                                 ? Container(
                                     child: Text(
-                                        "Error when adding exercise: ${_error!.message}}}"),
+                                        "Error when adding exercise:\n${_error!.message}}}"),
                                     padding: const EdgeInsets.only(top: 20.0),
                                   )
                                 : Container(),

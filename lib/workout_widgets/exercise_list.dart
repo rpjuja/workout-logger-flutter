@@ -183,7 +183,9 @@ class _ExerciseListState extends State<ExerciseList> {
                                 });
                           });
                     })
-                : Center(
+                : Container(
+                    alignment: Alignment.topCenter,
+                    margin: const EdgeInsets.only(top: 30),
                     child: Text(
                         'Error retrieving exercises:\n${_error!.message}'))),
         WorkoutNotes(userId: widget.userId, selectedDate: widget.selectedDate),

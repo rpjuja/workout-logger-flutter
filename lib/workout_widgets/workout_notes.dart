@@ -25,25 +25,21 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
       FirebaseDatabase.instance.ref("/workouts/");
   late StreamSubscription<DatabaseEvent> _workoutSubscription;
 
-  FirebaseException? _error;
-
   @override
   void initState() {
     super.initState();
     _notesFocusNode = FocusNode();
-    _getWorkoutData();
-    _listenForChanges();
+    _getNotesAndListen();
   }
 
-  // Fetch the notes again if user changes the date
-  // also call listenForChanges again to change the subscription date
+  // Call getNotesAndListen again if user changes the date
+  // to change the subscription date
   @override
   void didUpdateWidget(covariant oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedDate != oldWidget.selectedDate) {
-      _getWorkoutData();
       _workoutSubscription.cancel();
-      _listenForChanges();
+      _getNotesAndListen();
     }
   }
 
@@ -54,20 +50,21 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
     _workoutSubscription.cancel();
   }
 
-  void _listenForChanges() async {
+  void _getNotesAndListen() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
 
     _workoutSubscription =
         _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
       (event) {
         if (event.snapshot.exists) {
+          print('Connected to the database and read ${event.snapshot.value}');
           Map<String, dynamic> notes =
               Map<String, dynamic>.from(event.snapshot.value as Map);
           setState(() {
             _notesController.text = notes['notes'];
-            _error = null;
           });
         } else {
+          print('Connected to the database but no data found');
           setState(() {
             _notesController.text = '';
           });
@@ -75,38 +72,10 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
       },
       onError: (Object o) {
         final error = o as FirebaseException;
-        setState(() {
-          _error = error;
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error reading notes:/n${error.message}')));
       },
     );
-  }
-
-  void _getWorkoutData() async {
-    final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
-    // Read data from database
-    try {
-      final snapshot =
-          await _workoutRef.child("${widget.userId}/$queryDate").get();
-      if (snapshot.exists) {
-        print('Connected to the database and read ${snapshot.value}');
-        Map<String, dynamic> notes =
-            Map<String, dynamic>.from(snapshot.value as Map);
-        setState(() {
-          _notesController.text = notes['notes'];
-          _error = null;
-        });
-      } else {
-        print('Connected to the database but no data found');
-        setState(() {
-          _notesController.text = '';
-        });
-      }
-    } on FirebaseException catch (err) {
-      setState(() {
-        _error = err;
-      });
-    }
   }
 
   void _setWorkoutData() async {
@@ -115,11 +84,12 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
       await _workoutRef
           .child("${widget.userId}/$queryDate")
           .update({'notes': _notesController.text});
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Notes saved')));
       print('Connected to the database and wrote data');
     } on FirebaseException catch (err) {
-      setState(() {
-        _error = err;
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving notes:/n${err.message}')));
     }
   }
 
@@ -136,10 +106,7 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
       padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.1),
       child: TextFormField(
-        controller: _error == null
-            ? _notesController
-            : TextEditingController(
-                text: 'Error retrieving notes:\n${_error!.message}'),
+        controller: _notesController,
         focusNode: _notesFocusNode,
         onTap: _requestFocus,
         maxLines: 4,

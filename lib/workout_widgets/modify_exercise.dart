@@ -21,7 +21,6 @@ class ModifyExercise extends StatefulWidget {
   State<ModifyExercise> createState() => _ModifyExerciseState();
 }
 
-// Implement _ModifyExerciseState
 class _ModifyExerciseState extends State<ModifyExercise> {
   final DatabaseReference _workoutRef =
       FirebaseDatabase.instance.ref("/exercises/");

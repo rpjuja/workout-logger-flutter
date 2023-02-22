@@ -9,6 +9,7 @@ import 'package:workout_logger_app/workout_widgets/workout_notes.dart';
 import 'exercise_entry.dart';
 import 'add_exercise.dart';
 import 'modify_exercise.dart';
+import 'delete_exercise.dart';
 
 class ExerciseList extends StatefulWidget {
   const ExerciseList(
@@ -84,28 +85,10 @@ class _ExerciseListState extends State<ExerciseList> {
     );
   }
 
-  void _deleteExercise(String exerciseId, String exerciseName) async {
-    final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
-    try {
-      await _workoutRef
-          .child("${widget.userId}/$queryDate/$exerciseId")
-          .remove();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('$exerciseName removed')));
-      print('Deleted data from the database');
-    } on FirebaseException catch (err) {
-      setState(() {
-        print('Connected to the database but no data found');
-        _error = err;
-      });
-    }
-  }
-
   void _printExercises(Map<String, dynamic> exercises) {
     _exerciseList.clear();
     setState(() {
       exercises.forEach((key, value) {
-        print(key);
         _exerciseList.add(ExerciseEntry(
           id: key,
           name: value['name'],
@@ -170,32 +153,12 @@ class _ExerciseListState extends State<ExerciseList> {
                                 builder: (BuildContext context) {
                                   return direction ==
                                           DismissDirection.endToStart
-                                      ? AlertDialog(
-                                          title: const Text("Confirm"),
-                                          content: Text(
-                                              'Are you sure you wish to delete ${_exerciseList[index].name}?'),
-                                          actions: <Widget>[
-                                            ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.deepPurple),
-                                                onPressed: () => {
-                                                      _deleteExercise(
-                                                          _exerciseList[index]
-                                                              .id,
-                                                          _exerciseList[index]
-                                                              .name),
-                                                      Navigator.of(context)
-                                                          .pop(true),
-                                                    },
-                                                child: const Text("DELETE")),
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context)
-                                                      .pop(false),
-                                              child: const Text("CANCEL"),
-                                            ),
-                                          ],
+                                      ? DeleteExercise(
+                                          userId: widget.userId,
+                                          selectedDate: widget.selectedDate,
+                                          exerciseId: _exerciseList[index].id,
+                                          exerciseName:
+                                              _exerciseList[index].name,
                                         )
                                       : ModifyExercise(
                                           userId: widget.userId,

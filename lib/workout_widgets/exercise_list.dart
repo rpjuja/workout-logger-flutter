@@ -8,6 +8,7 @@ import 'package:workout_logger_app/workout_widgets/workout_notes.dart';
 
 import 'exercise_entry.dart';
 import 'add_exercise.dart';
+import 'modify_exercise.dart';
 
 class ExerciseList extends StatefulWidget {
   const ExerciseList(
@@ -104,6 +105,7 @@ class _ExerciseListState extends State<ExerciseList> {
     _exerciseList.clear();
     setState(() {
       exercises.forEach((key, value) {
+        print(key);
         _exerciseList.add(ExerciseEntry(
           id: key,
           name: value['name'],
@@ -129,16 +131,25 @@ class _ExerciseListState extends State<ExerciseList> {
                       return Dismissible(
                           key: Key(_exerciseList[index].id),
                           child: _exerciseList[index].build(context),
-                          direction: DismissDirection.endToStart,
-                          onDismissed: (diretion) {
-                            setState(() {
-                              _exerciseList.removeAt(index);
-                            });
-                          },
+                          direction: DismissDirection.horizontal,
                           dismissThresholds: const <DismissDirection, double>{
                             DismissDirection.endToStart: 0.5,
                           },
                           background: Container(
+                            child: const Icon(Icons.edit),
+                            decoration: const BoxDecoration(
+                                color: Colors.deepPurple,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(left: 10.0),
+                            margin: EdgeInsets.fromLTRB(
+                                MediaQuery.of(context).size.width * 0.1,
+                                0,
+                                MediaQuery.of(context).size.width * 0.1,
+                                10),
+                          ),
+                          secondaryBackground: Container(
                             child: const Icon(Icons.delete),
                             decoration: const BoxDecoration(
                                 color: Colors.deepPurple,
@@ -157,29 +168,39 @@ class _ExerciseListState extends State<ExerciseList> {
                             return await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text("Confirm"),
-                                    content: Text(
-                                        'Are you sure you wish to delete ${_exerciseList[index].name}?'),
-                                    actions: <Widget>[
-                                      ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  Colors.deepPurple),
-                                          onPressed: () => {
-                                                _deleteExercise(
-                                                    _exerciseList[index].id,
-                                                    _exerciseList[index].name),
-                                                Navigator.of(context).pop(true),
-                                              },
-                                          child: const Text("DELETE")),
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(false),
-                                        child: const Text("CANCEL"),
-                                      ),
-                                    ],
-                                  );
+                                  return direction ==
+                                          DismissDirection.endToStart
+                                      ? AlertDialog(
+                                          title: const Text("Confirm"),
+                                          content: Text(
+                                              'Are you sure you wish to delete ${_exerciseList[index].name}?'),
+                                          actions: <Widget>[
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.deepPurple),
+                                                onPressed: () => {
+                                                      _deleteExercise(
+                                                          _exerciseList[index]
+                                                              .id,
+                                                          _exerciseList[index]
+                                                              .name),
+                                                      Navigator.of(context)
+                                                          .pop(true),
+                                                    },
+                                                child: const Text("DELETE")),
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(false),
+                                              child: const Text("CANCEL"),
+                                            ),
+                                          ],
+                                        )
+                                      : ModifyExercise(
+                                          userId: widget.userId,
+                                          selectedDate: widget.selectedDate,
+                                          exercise: _exerciseList[index]);
                                 });
                           });
                     })

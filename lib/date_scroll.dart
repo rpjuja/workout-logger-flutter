@@ -29,6 +29,10 @@ class _DateScrollState extends State<DateScroll> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 10,
+              shadowColor: Colors.deepPurple[300],
+            ),
             onPressed: () {
               widget.dateSubtracted();
             },
@@ -43,6 +47,10 @@ class _DateScrollState extends State<DateScroll> {
                       ? const Text("Tomorrow")
                       : Text(DateFormat('d.M.yyyy').format(widget.date!)),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 10,
+              shadowColor: Colors.deepPurple[300],
+            ),
             onPressed: () {
               setState(() {
                 widget.dateAdded();

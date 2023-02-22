@@ -21,6 +21,8 @@ class ExerciseEntry extends StatelessWidget {
     return Card(
       margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.1, 0,
           MediaQuery.of(context).size.width * 0.1, 10),
+      elevation: 10,
+      shadowColor: Colors.deepPurple[300]?.withOpacity(0.5),
       child: Row(children: [
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.5,

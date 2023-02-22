@@ -91,21 +91,28 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Workout Tracker"),
-        ),
-        body: !_initialized
-            ? const Center(child: CircularProgressIndicator())
-            : Column(children: [
-                DateScroll(
-                    date: _selectedDate.value,
-                    dateAdded: _dateAdded,
-                    dateSubtracted: _dateSubtracted),
-                ExerciseList(
-                    userId: _userId, selectedDate: _selectedDate.value),
-              ]),
-        bottomNavigationBar:
-            NavBar(date: _selectedDate.value, dateChanged: _dateChanged));
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus() /* hide keyboard */,
+      child: Scaffold(
+          appBar: AppBar(
+            elevation: 10,
+            shadowColor: Colors.deepPurple[300],
+            title: const Text("Workout Tracker"),
+          ),
+          body: !_initialized
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    DateScroll(
+                        date: _selectedDate.value,
+                        dateAdded: _dateAdded,
+                        dateSubtracted: _dateSubtracted),
+                    ExerciseList(
+                        userId: _userId, selectedDate: _selectedDate.value),
+                  ],
+                ),
+          bottomNavigationBar:
+              NavBar(date: _selectedDate.value, dateChanged: _dateChanged)),
+    );
   }
 }

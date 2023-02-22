@@ -102,9 +102,26 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.1),
+      width: MediaQuery.of(context).size.width * 0.8,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        boxShadow: [
+          _notesFocusNode.hasFocus
+              ? BoxShadow(
+                  color: Colors.deepPurple.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3), // changes position of shadow
+                )
+              : BoxShadow(
+                  color: Colors.deepPurple.withOpacity(0.3),
+                  spreadRadius: 3,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3), // changes position of shadow
+                )
+        ],
+      ),
       child: TextFormField(
         controller: _notesController,
         focusNode: _notesFocusNode,

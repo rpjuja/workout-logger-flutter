@@ -171,7 +171,7 @@ class _ModifyExerciseState extends State<ModifyExercise> {
                 _modifyExercise();
               }
             },
-            child: const Text('Modify'),
+            child: const Text('Confirm'),
           ),
         ],
       ),

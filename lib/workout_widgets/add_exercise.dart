@@ -68,6 +68,8 @@ class _AddExerciseState extends State<AddExercise> {
           style: ElevatedButton.styleFrom(
             padding:
                 const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+            elevation: 10,
+            shadowColor: Colors.deepPurple[300],
           ),
           onPressed: () {
             showDialog(

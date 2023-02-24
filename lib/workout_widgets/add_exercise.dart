@@ -65,6 +65,7 @@ class _AddExerciseState extends State<AddExercise> {
       buttonPadding: const EdgeInsets.all(30.0),
       children: [
         ElevatedButton(
+          key: const Key('addExerciseButton'),
           style: ElevatedButton.styleFrom(
             padding:
                 const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),

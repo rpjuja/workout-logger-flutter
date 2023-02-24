@@ -13,9 +13,13 @@ import 'delete_exercise.dart';
 
 class ExerciseList extends StatefulWidget {
   const ExerciseList(
-      {Key? key, required this.userId, required this.selectedDate})
+      {Key? key,
+      this.testDatabaseReference,
+      required this.userId,
+      required this.selectedDate})
       : super(key: key);
 
+  final DatabaseReference? testDatabaseReference;
   final String userId;
   final DateTime selectedDate;
 
@@ -24,8 +28,7 @@ class ExerciseList extends StatefulWidget {
 }
 
 class _ExerciseListState extends State<ExerciseList> {
-  final DatabaseReference _workoutRef =
-      FirebaseDatabase.instance.ref("/exercises/");
+  late final DatabaseReference _workoutRef;
   late StreamSubscription<DatabaseEvent> _workoutSubscription;
 
   FirebaseException? _error;
@@ -35,6 +38,9 @@ class _ExerciseListState extends State<ExerciseList> {
   @override
   void initState() {
     super.initState();
+    // When testing, the widget will receive a testDatabaseReference, otherwise use the real database
+    _workoutRef = widget.testDatabaseReference ??
+        FirebaseDatabase.instance.ref("/exercises/");
     _getExercisesAndListen();
   }
 
@@ -57,6 +63,7 @@ class _ExerciseListState extends State<ExerciseList> {
 
   void _getExercisesAndListen() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
+
     _workoutSubscription =
         _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
       (event) {
@@ -106,72 +113,71 @@ class _ExerciseListState extends State<ExerciseList> {
         child: Column(
       children: [
         Flexible(
-            fit: FlexFit.loose,
-            child: _error == null
-                ? ListView.builder(
-                    itemCount: _exerciseList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Dismissible(
-                          key: Key(_exerciseList[index].id),
-                          child: _exerciseList[index].build(context),
-                          direction: DismissDirection.horizontal,
-                          dismissThresholds: const <DismissDirection, double>{
-                            DismissDirection.endToStart: 0.5,
-                          },
-                          background: Container(
-                            child: const Icon(Icons.edit),
-                            decoration: const BoxDecoration(
-                                color: Colors.deepPurple,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(left: 10.0),
-                            margin: EdgeInsets.fromLTRB(
-                                MediaQuery.of(context).size.width * 0.1,
-                                0,
-                                MediaQuery.of(context).size.width * 0.1,
-                                10),
-                          ),
-                          secondaryBackground: Container(
-                            child: const Icon(Icons.delete),
-                            decoration: const BoxDecoration(
-                                color: Colors.deepPurple,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.only(right: 10.0),
-                            margin: EdgeInsets.fromLTRB(
-                                MediaQuery.of(context).size.width * 0.1,
-                                0,
-                                MediaQuery.of(context).size.width * 0.1,
-                                10),
-                          ),
-                          // Ask user for confirmation before deleting
-                          confirmDismiss: (direction) async {
-                            return await showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return direction ==
-                                          DismissDirection.endToStart
-                                      ? DeleteExercise(
-                                          userId: widget.userId,
-                                          selectedDate: widget.selectedDate,
-                                          exerciseId: _exerciseList[index].id,
-                                          exerciseName:
-                                              _exerciseList[index].name,
-                                        )
-                                      : ModifyExercise(
-                                          userId: widget.userId,
-                                          selectedDate: widget.selectedDate,
-                                          exercise: _exerciseList[index]);
-                                });
-                          });
-                    })
-                : Container(
-                    alignment: Alignment.topCenter,
-                    margin: const EdgeInsets.only(top: 30),
-                    child: Text(
-                        'Error retrieving exercises:\n${_error!.message}'))),
+          fit: FlexFit.loose,
+          child: _error == null
+              ? ListView.builder(
+                  itemCount: _exerciseList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Dismissible(
+                        key: Key(_exerciseList[index].id),
+                        child: _exerciseList[index].build(context),
+                        direction: DismissDirection.horizontal,
+                        dismissThresholds: const <DismissDirection, double>{
+                          DismissDirection.endToStart: 0.5,
+                        },
+                        background: Container(
+                          child: const Icon(Icons.edit),
+                          decoration: const BoxDecoration(
+                              color: Colors.deepPurple,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(left: 10.0),
+                          margin: EdgeInsets.fromLTRB(
+                              MediaQuery.of(context).size.width * 0.1,
+                              0,
+                              MediaQuery.of(context).size.width * 0.1,
+                              10),
+                        ),
+                        secondaryBackground: Container(
+                          child: const Icon(Icons.delete),
+                          decoration: const BoxDecoration(
+                              color: Colors.deepPurple,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 10.0),
+                          margin: EdgeInsets.fromLTRB(
+                              MediaQuery.of(context).size.width * 0.1,
+                              0,
+                              MediaQuery.of(context).size.width * 0.1,
+                              10),
+                        ),
+                        // Ask user for confirmation before deleting
+                        confirmDismiss: (direction) async {
+                          return await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return direction == DismissDirection.endToStart
+                                    ? DeleteExercise(
+                                        userId: widget.userId,
+                                        selectedDate: widget.selectedDate,
+                                        exerciseId: _exerciseList[index].id,
+                                        exerciseName: _exerciseList[index].name,
+                                      )
+                                    : ModifyExercise(
+                                        userId: widget.userId,
+                                        selectedDate: widget.selectedDate,
+                                        exercise: _exerciseList[index]);
+                              });
+                        });
+                  })
+              : Container(
+                  alignment: Alignment.topCenter,
+                  margin: const EdgeInsets.only(top: 30),
+                  child:
+                      Text('Error retrieving exercises:\n${_error!.message}')),
+        ),
         WorkoutNotes(userId: widget.userId, selectedDate: widget.selectedDate),
         AddExercise(userId: widget.userId, selectedDate: widget.selectedDate)
       ],

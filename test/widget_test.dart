@@ -1,30 +1,81 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:workout_logger_app/main.dart';
+import 'package:intl/intl.dart';
+import 'package:workout_logger_app/firebase_options.dart';
+import 'package:firebase_database_mocks/firebase_database_mocks.dart';
+import 'package:workout_logger_app/workout_widgets/exercise_list.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  late MockFirebaseDatabase mockDatabase;
+  late DatabaseReference databaseReference;
+  setupFirebaseMocks();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  // Create test data
+  const dummyData = {
+    'name': 'Bench Press',
+    'sets': "3",
+    'reps': "10",
+    'weight': "100",
+  };
+  group('ExerciseList', () {
+    String userId = "0";
+    String date = DateFormat("dd,MM,yyyy").format(DateTime(2021, 9, 1));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Set up firebase before tests
+    setUpAll(() async {
+      Firebase.initializeApp(
+          name: "workout-logger-app",
+          options: DefaultFirebaseOptions.currentPlatform);
+      mockDatabase = MockFirebaseDatabase();
+      databaseReference = mockDatabase.ref("/exercises/");
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    testWidgets('Show the correct exercise', (WidgetTester tester) async {
+      // Set test data to mock database.
+      await databaseReference.child("$userId/$date/").push().set(dummyData);
+
+      // Build app inside MaterialApp and a Column to avoid errors when running tests
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Column(children: [
+            ExerciseList(
+                testDatabaseReference: databaseReference,
+                userId: "0",
+                selectedDate: DateTime(2021, 9, 1))
+          ]),
+        ),
+      ));
+
+      // Let the snapshots stream fire a snapshot.
+      await tester.idle();
+      // Re-render.
+      await tester.pump();
+
+      // Verify that an exercise has been added
+      expect(find.byType(Card), findsOneWidget);
+      expect(find.text('Bench Press'), findsOneWidget);
+      expect(find.text('3'), findsOneWidget);
+      expect(find.text('10'), findsOneWidget);
+      expect(find.text('100'), findsOneWidget);
+    }
+
+        // testWidgets('Add a new exercise', (WidgetTester tester) async {}
+
+        // testWidgets('Show the correct notes', (WidgetTester tester) async {}
+
+        // testWidgets('Add notes', (WidgetTester tester) async {
+
+        // // Edit the notes text field and save
+        // await tester.enterText(
+        //     find.byKey(const Key('notes_text_field')), 'Good workout');
+        // await tester.tap(find.byKey(const Key("notes_text_field")));
+        // await tester.pump();
+
+        // // Verify that the notes have been saved
+        // expect(find.text('Good workout'), findsOneWidget);
+        //}
+        );
   });
 }

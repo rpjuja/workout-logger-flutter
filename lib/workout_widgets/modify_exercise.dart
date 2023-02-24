@@ -151,9 +151,9 @@ class _ModifyExerciseState extends State<ModifyExercise> {
             ),
             _error != null
                 ? Container(
+                    padding: const EdgeInsets.only(top: 20.0),
                     child: Text(
                         "Error when modifying exercise:\n${_error!.message}}}"),
-                    padding: const EdgeInsets.only(top: 20.0),
                   )
                 : Container(),
           ],

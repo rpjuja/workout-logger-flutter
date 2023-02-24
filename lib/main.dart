@@ -27,10 +27,10 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
               .copyWith(secondary: Colors.deepPurple[300]),
           textTheme: const TextTheme(
-            headline6: TextStyle(fontSize: 24.0),
-            bodyText1: TextStyle(fontSize: 20.0),
-            bodyText2: TextStyle(fontSize: 18.0),
-            button: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
+            titleLarge: TextStyle(fontSize: 24.0),
+            bodyLarge: TextStyle(fontSize: 20.0),
+            bodyMedium: TextStyle(fontSize: 18.0),
+            labelLarge: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
           )).copyWith(
         dividerColor: Colors.deepPurple[200],
       ),

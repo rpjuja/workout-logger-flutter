@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
 
   Future<void> init() async {
     _database = FirebaseDatabase.instance;
-    _userRef = FirebaseDatabase.instance.ref("/users/");
+    _userRef = _database.ref("/users/");
 
     // Enable disk persistence on mobile devices
     if (!kIsWeb) {
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
   void _getUserData() async {
     try {
       final snapshot =
-          await _userRef.child("$_userId").once(DatabaseEventType.value);
+          await _userRef.child(_userId).once(DatabaseEventType.value);
       if (snapshot.snapshot.value != null) {
         print('Connected to the database and read ${snapshot.snapshot.value}');
       } else {

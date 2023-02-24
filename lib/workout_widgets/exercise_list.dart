@@ -120,13 +120,11 @@ class _ExerciseListState extends State<ExerciseList> {
                   itemBuilder: (BuildContext context, int index) {
                     return Dismissible(
                         key: Key(_exerciseList[index].id),
-                        child: _exerciseList[index].build(context),
                         direction: DismissDirection.horizontal,
                         dismissThresholds: const <DismissDirection, double>{
                           DismissDirection.endToStart: 0.5,
                         },
                         background: Container(
-                          child: const Icon(Icons.edit),
                           decoration: const BoxDecoration(
                               color: Colors.deepPurple,
                               borderRadius:
@@ -138,9 +136,9 @@ class _ExerciseListState extends State<ExerciseList> {
                               0,
                               MediaQuery.of(context).size.width * 0.1,
                               10),
+                          child: const Icon(Icons.edit),
                         ),
                         secondaryBackground: Container(
-                          child: const Icon(Icons.delete),
                           decoration: const BoxDecoration(
                               color: Colors.deepPurple,
                               borderRadius:
@@ -152,6 +150,7 @@ class _ExerciseListState extends State<ExerciseList> {
                               0,
                               MediaQuery.of(context).size.width * 0.1,
                               10),
+                          child: const Icon(Icons.delete),
                         ),
                         // Ask user for confirmation before deleting
                         confirmDismiss: (direction) async {
@@ -170,7 +169,8 @@ class _ExerciseListState extends State<ExerciseList> {
                                         selectedDate: widget.selectedDate,
                                         exercise: _exerciseList[index]);
                               });
-                        });
+                        },
+                        child: _exerciseList[index].build(context));
                   })
               : Container(
                   alignment: Alignment.topCenter,

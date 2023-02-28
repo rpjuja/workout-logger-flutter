@@ -23,7 +23,7 @@ class ModifyExercise extends StatefulWidget {
 
 class _ModifyExerciseState extends State<ModifyExercise> {
   final DatabaseReference _workoutRef =
-      FirebaseDatabase.instance.ref("/exercises/");
+      FirebaseDatabase.instance.ref("exercises");
 
   FirebaseException? _error;
 
@@ -57,7 +57,6 @@ class _ModifyExerciseState extends State<ModifyExercise> {
         'weight': _weight.text,
       });
       print('Connected to the database and wrote data');
-      Navigator.of(context).pop();
     } on FirebaseException catch (err) {
       setState(() {
         _error = err;
@@ -169,6 +168,7 @@ class _ModifyExerciseState extends State<ModifyExercise> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 _modifyExercise();
+                Navigator.of(context).pop();
               }
             },
             child: const Text('Confirm'),

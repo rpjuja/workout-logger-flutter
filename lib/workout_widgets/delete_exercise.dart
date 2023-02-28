@@ -33,8 +33,7 @@ class _DeleteExerciseState extends State<DeleteExercise> {
       await _workoutRef
           .child("${widget.userId}/$queryDate/${widget.exerciseId}")
           .remove();
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${widget.exerciseName} removed')));
+
       print('Deleted data from the database');
     } on FirebaseException catch (err) {
       setState(() {
@@ -54,12 +53,14 @@ class _DeleteExerciseState extends State<DeleteExercise> {
             style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
             onPressed: () => {
                   _deleteExercise(),
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('${widget.exerciseName} removed'))),
                   Navigator.of(context).pop(true),
                 },
             child: const Text("DELETE")),
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text("CANCEL"),
+          child: const Text("Cancel"),
         ),
       ],
     );

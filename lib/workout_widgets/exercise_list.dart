@@ -40,7 +40,7 @@ class _ExerciseListState extends State<ExerciseList> {
     super.initState();
     // When testing, the widget will receive a testDatabaseReference, otherwise use the real database
     _workoutRef = widget.testDatabaseReference ??
-        FirebaseDatabase.instance.ref("/exercises/");
+        FirebaseDatabase.instance.ref("exercises");
     _getExercisesAndListen();
   }
 
@@ -63,7 +63,6 @@ class _ExerciseListState extends State<ExerciseList> {
 
   void _getExercisesAndListen() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
-
     _workoutSubscription =
         _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
       (event) {
@@ -72,9 +71,6 @@ class _ExerciseListState extends State<ExerciseList> {
           Map<String, dynamic> exercises =
               Map<String, dynamic>.from(event.snapshot.value as Map);
           _printExercises(exercises);
-          setState(() {
-            _error = null;
-          });
         } else {
           print('Connected to the database but no data found');
           setState(() {
@@ -104,6 +100,7 @@ class _ExerciseListState extends State<ExerciseList> {
           weight: value['weight'],
         ));
       });
+      _error = null;
     });
   }
 
@@ -179,7 +176,11 @@ class _ExerciseListState extends State<ExerciseList> {
                       Text('Error retrieving exercises:\n${_error!.message}')),
         ),
         WorkoutNotes(userId: widget.userId, selectedDate: widget.selectedDate),
-        AddExercise(userId: widget.userId, selectedDate: widget.selectedDate)
+        AddExercise(
+          userId: widget.userId,
+          selectedDate: widget.selectedDate,
+          databaseReference: _workoutRef,
+        )
       ],
     ));
   }

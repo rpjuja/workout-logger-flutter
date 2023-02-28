@@ -5,19 +5,22 @@ import 'package:intl/intl.dart';
 
 class AddExercise extends StatefulWidget {
   const AddExercise(
-      {Key? key, required this.userId, required this.selectedDate})
+      {Key? key,
+      required this.userId,
+      required this.selectedDate,
+      required this.databaseReference})
       : super(key: key);
 
   final String userId;
   final DateTime selectedDate;
+  final DatabaseReference databaseReference;
 
   @override
   State<AddExercise> createState() => _AddExerciseState();
 }
 
 class _AddExerciseState extends State<AddExercise> {
-  final DatabaseReference _workoutRef =
-      FirebaseDatabase.instance.ref("/exercises/");
+  late final DatabaseReference _workoutRef;
 
   FirebaseException? _error;
 
@@ -28,6 +31,13 @@ class _AddExerciseState extends State<AddExercise> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isNumeric(string) => num.tryParse(string) != null;
+
+  @override
+  void initState() {
+    super.initState();
+    // Take databaseReference from the parent widget for testing purposes
+    _workoutRef = widget.databaseReference;
+  }
 
   void _clearTextFields() {
     _name.clear();
@@ -40,7 +50,7 @@ class _AddExerciseState extends State<AddExercise> {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
 
     var exerciseId =
-        _workoutRef.child('/${widget.userId}/$queryDate/').push().key;
+        _workoutRef.child('${widget.userId}/$queryDate').push().key;
     try {
       await _workoutRef.child("${widget.userId}/$queryDate/$exerciseId").set({
         'name': _name.text,
@@ -50,7 +60,6 @@ class _AddExerciseState extends State<AddExercise> {
       });
       print('Connected to the database and wrote data');
       _clearTextFields();
-      Navigator.of(context).pop();
     } on FirebaseException catch (err) {
       setState(() {
         _error = err;
@@ -84,6 +93,7 @@ class _AddExerciseState extends State<AddExercise> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextFormField(
+                            key: const Key('exerciseNameField'),
                             controller: _name,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -104,6 +114,7 @@ class _AddExerciseState extends State<AddExercise> {
                             children: [
                               Expanded(
                                 child: TextFormField(
+                                  key: const Key('exerciseSetsField'),
                                   controller: _sets,
                                   validator: (value) {
                                     if (value == null || !_isNumeric(value)) {
@@ -123,6 +134,7 @@ class _AddExerciseState extends State<AddExercise> {
                               ),
                               Expanded(
                                 child: TextFormField(
+                                  key: const Key('exerciseRepsField'),
                                   controller: _reps,
                                   validator: (value) {
                                     if (value == null || !_isNumeric(value)) {
@@ -142,6 +154,7 @@ class _AddExerciseState extends State<AddExercise> {
                               ),
                               Expanded(
                                 child: TextFormField(
+                                  key: const Key('exerciseWeightField'),
                                   controller: _weight,
                                   validator: (value) {
                                     if (value == null || !_isNumeric(value)) {
@@ -169,6 +182,7 @@ class _AddExerciseState extends State<AddExercise> {
                       ),
                       actions: [
                         TextButton(
+                          key: const Key('cancelButton'),
                           onPressed: () => {
                             _clearTextFields(),
                             Navigator.of(context).pop(),
@@ -176,9 +190,11 @@ class _AddExerciseState extends State<AddExercise> {
                           child: const Text('Cancel'),
                         ),
                         ElevatedButton(
+                          key: const Key('addButton'),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               _addExercise();
+                              Navigator.of(context).pop();
                             }
                           },
                           child: const Text('Add'),

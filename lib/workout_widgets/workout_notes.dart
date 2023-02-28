@@ -84,8 +84,6 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
       await _workoutRef
           .child("${widget.userId}/$queryDate")
           .update({'notes': _notesController.text});
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Notes saved')));
       print('Connected to the database and wrote data');
     } on FirebaseException catch (err) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -142,7 +140,11 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
               borderSide: BorderSide(color: Colors.deepPurple, width: 2),
               borderRadius: BorderRadius.all(Radius.circular(10))),
           suffixIcon: IconButton(
-            onPressed: () => _setWorkoutData(),
+            onPressed: () => {
+              _setWorkoutData(),
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Notes saved')))
+            },
             icon: const Icon(Icons.save_alt),
             iconSize: 30,
             splashRadius: 20,

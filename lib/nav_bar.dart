@@ -15,7 +15,7 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> with RestorationMixin {
   int _navBarIndex = 0;
   @override
-  String? get restorationId => "nav_bar";
+  String? get restorationId => "calendar";
   late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
       RestorableRouteFuture<DateTime?>(
     onComplete: _selectDate,
@@ -43,7 +43,7 @@ class _NavBarState extends State<NavBar> with RestorationMixin {
       context: context,
       builder: (BuildContext context) {
         return DatePickerDialog(
-          restorationId: 'date_picker_dialog',
+          restorationId: 'date_picker_dialog_for_calendar',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
           initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
           firstDate: DateTime(2022),
@@ -55,8 +55,8 @@ class _NavBarState extends State<NavBar> with RestorationMixin {
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(
-        _restorableDatePickerRouteFuture, 'date_picker_route_future');
+    registerForRestoration(_restorableDatePickerRouteFuture,
+        'date_picker_route_future_for_calendar');
   }
 
   @override

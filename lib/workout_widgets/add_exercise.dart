@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../styles.dart';
+
 class AddExercise extends StatefulWidget {
   const AddExercise(
       {Key? key,
@@ -75,12 +77,7 @@ class _AddExerciseState extends State<AddExercise> {
       children: [
         ElevatedButton(
           key: const Key('addExerciseButton'),
-          style: ElevatedButton.styleFrom(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
-            elevation: 10,
-            shadowColor: Colors.deepPurple[300],
-          ),
+          style: ButtonStyles.shadowPadding,
           onPressed: () {
             showDialog(
                 context: context,

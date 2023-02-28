@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:workout_logger_app/styles.dart';
 
 class DateScroll extends StatefulWidget {
   final Function() dateAdded;
@@ -24,15 +25,12 @@ class _DateScrollState extends State<DateScroll> {
       height: 50.0,
       width: double.infinity,
       margin: EdgeInsets.symmetric(
-          vertical: 10.0, horizontal: MediaQuery.of(context).size.width * 0.1),
+          vertical: 20.0, horizontal: MediaQuery.of(context).size.width * 0.1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 10,
-              shadowColor: Colors.deepPurple[300],
-            ),
+            style: ButtonStyles.shadowPadding,
             onPressed: () {
               widget.dateSubtracted();
             },
@@ -47,10 +45,7 @@ class _DateScrollState extends State<DateScroll> {
                       ? const Text("Tomorrow")
                       : Text(DateFormat('d.M.yyyy').format(widget.date!)),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 10,
-              shadowColor: Colors.deepPurple[300],
-            ),
+            style: ButtonStyles.shadowPadding,
             onPressed: () {
               setState(() {
                 widget.dateAdded();

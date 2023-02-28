@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:workout_logger_app/workout_widgets/copy_workout.dart';
 import 'package:workout_logger_app/workout_widgets/workout_notes.dart';
 
 import 'exercise_entry.dart';
@@ -107,11 +108,10 @@ class _ExerciseListState extends State<ExerciseList> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: Column(
-      children: [
+      child: Column(children: [
         Flexible(
           fit: FlexFit.loose,
-          child: _error == null
+          child: _error == null && _exerciseList.isNotEmpty
               ? ListView.builder(
                   itemCount: _exerciseList.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -169,11 +169,16 @@ class _ExerciseListState extends State<ExerciseList> {
                         },
                         child: _exerciseList[index].build(context));
                   })
-              : Container(
-                  alignment: Alignment.topCenter,
-                  margin: const EdgeInsets.only(top: 30),
-                  child:
-                      Text('Error retrieving exercises:\n${_error!.message}')),
+              : _error == null
+                  ? CopyWorkout(
+                      databaseReference: _workoutRef,
+                      userId: widget.userId,
+                      selectedDate: widget.selectedDate)
+                  : Container(
+                      alignment: Alignment.topCenter,
+                      margin: const EdgeInsets.only(top: 30),
+                      child: Text(
+                          'Error retrieving exercises:\n${_error!.message}')),
         ),
         WorkoutNotes(userId: widget.userId, selectedDate: widget.selectedDate),
         AddExercise(
@@ -181,7 +186,7 @@ class _ExerciseListState extends State<ExerciseList> {
           selectedDate: widget.selectedDate,
           databaseReference: _workoutRef,
         )
-      ],
-    ));
+      ]),
+    );
   }
 }

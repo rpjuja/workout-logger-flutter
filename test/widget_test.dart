@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,7 @@ import 'package:workout_logger_app/firebase_options.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:workout_logger_app/workout_widgets/add_exercise.dart';
 import 'package:workout_logger_app/workout_widgets/exercise_list.dart';
-import 'package:workout_logger_app/workout_widgets/workout_notes.dart';
+// import 'package:workout_logger_app/workout_widgets/workout_notes.dart';
 
 void main() {
   late DatabaseReference databaseReference;
@@ -115,7 +113,7 @@ void main() {
       await tester.pumpWidget(buildTestableWidget(AddExercise(
         userId: userId,
         selectedDate: date,
-        databaseReference: databaseReference,
+        testDatabaseReference: databaseReference,
       )));
 
       // Tap the add exercise button
@@ -144,17 +142,10 @@ void main() {
     });
 
     testWidgets('Add a new exercise', (WidgetTester tester) async {
-      // Empty the database before adding a new exercise
-      await databaseReference.child("$userId/$dateString").remove();
-
-      await tester.pumpWidget(buildTestableWidget(
-        Column(children: [
-          ExerciseList(
-              testDatabaseReference: databaseReference,
-              userId: userId,
-              selectedDate: date)
-        ]),
-      ));
+      await tester.pumpWidget(buildTestableWidget(AddExercise(
+          testDatabaseReference: databaseReference,
+          userId: userId,
+          selectedDate: date)));
 
       await tester.idle();
       await tester.pump();
@@ -176,23 +167,24 @@ void main() {
       // Verify that the dialog is closed
       expect(find.widgetWithText(AlertDialog, 'Add Exercise'), findsNothing);
 
-      // Verify that the exercise has been added to Firebase
-      expect(
-          await databaseReference.child("$userId/$dateString").once().then(
-              (event) => {
-                    Map<String, dynamic>.from(event.snapshot.value as Map)
-                        .entries
-                        .first
-                        .value
-                  }),
-          [
-            {'name': 'Squat', 'sets': '5', 'reps': '5', 'weight': '200'}
-          ]);
+      await tester.pumpWidget(buildTestableWidget(
+        Column(children: [
+          ExerciseList(
+              testDatabaseReference: databaseReference,
+              userId: userId,
+              selectedDate: date)
+        ]),
+      ));
 
-      // Verify that the exercise has been added to UI
-      // expect(find.byType(Card), findsNWidgets(2));
-      // expect(find.text('Bench Press'), findsOneWidget);
-      // expect(find.text('Squat'), findsOneWidget);
+      await tester.idle();
+      await tester.pump();
+
+      // Verify that the exercise has been added to the UI
+      expect(find.byType(Card), findsNWidgets(2));
+      expect(find.text('Bench Press'), findsOneWidget);
+      expect(find.text('Squat'), findsOneWidget);
+      expect(find.text('5'), findsNWidgets(2));
+      expect(find.text('200'), findsOneWidget);
     });
   });
 

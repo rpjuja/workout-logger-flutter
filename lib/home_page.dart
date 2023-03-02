@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'workout_widgets/exercise_list.dart';
+import 'workout_widgets/add_exercise.dart';
+import 'workout_widgets/workout_notes.dart';
 import 'date_scroll.dart';
 import 'nav_bar.dart';
 
@@ -109,6 +111,12 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
                         dateSubtracted: _dateSubtracted),
                     ExerciseList(
                         userId: _userId, selectedDate: _selectedDate.value),
+                    WorkoutNotes(
+                        userId: _userId, selectedDate: _selectedDate.value),
+                    AddExercise(
+                      userId: _userId,
+                      selectedDate: _selectedDate.value,
+                    ),
                   ],
                 ),
           bottomNavigationBar:

@@ -8,14 +8,14 @@ import '../styles.dart';
 class AddExercise extends StatefulWidget {
   const AddExercise(
       {Key? key,
+      this.testDatabaseReference,
       required this.userId,
-      required this.selectedDate,
-      required this.databaseReference})
+      required this.selectedDate})
       : super(key: key);
 
+  final DatabaseReference? testDatabaseReference;
   final String userId;
   final DateTime selectedDate;
-  final DatabaseReference databaseReference;
 
   @override
   State<AddExercise> createState() => _AddExerciseState();
@@ -37,8 +37,9 @@ class _AddExerciseState extends State<AddExercise> {
   @override
   void initState() {
     super.initState();
-    // Take databaseReference from the parent widget for testing purposes
-    _workoutRef = widget.databaseReference;
+    // When testing, the widget will receive a testDatabaseReference, otherwise use the real database
+    _workoutRef = widget.testDatabaseReference ??
+        FirebaseDatabase.instance.ref("exercises");
   }
 
   void _clearTextFields() {

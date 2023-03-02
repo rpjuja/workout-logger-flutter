@@ -5,10 +5,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:workout_logger_app/workout_widgets/copy_workout.dart';
-import 'package:workout_logger_app/workout_widgets/workout_notes.dart';
 
 import 'exercise_entry.dart';
-import 'add_exercise.dart';
+
 import 'modify_exercise.dart';
 import 'delete_exercise.dart';
 
@@ -107,86 +106,74 @@ class _ExerciseListState extends State<ExerciseList> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(children: [
-        Flexible(
-          fit: FlexFit.loose,
-          child: _error == null && _exerciseList.isNotEmpty
-              ? ListView.builder(
-                  itemCount: _exerciseList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Dismissible(
-                        key: Key(_exerciseList[index].id),
-                        direction: DismissDirection.horizontal,
-                        dismissThresholds: const <DismissDirection, double>{
-                          DismissDirection.endToStart: 0.5,
-                        },
-                        background: Container(
-                          decoration: const BoxDecoration(
-                              color: Colors.deepPurple,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5))),
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(left: 10.0),
-                          margin: EdgeInsets.fromLTRB(
-                              MediaQuery.of(context).size.width * 0.1,
-                              0,
-                              MediaQuery.of(context).size.width * 0.1,
-                              10),
-                          child: const Icon(Icons.edit),
-                        ),
-                        secondaryBackground: Container(
-                          decoration: const BoxDecoration(
-                              color: Colors.deepPurple,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5))),
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 10.0),
-                          margin: EdgeInsets.fromLTRB(
-                              MediaQuery.of(context).size.width * 0.1,
-                              0,
-                              MediaQuery.of(context).size.width * 0.1,
-                              10),
-                          child: const Icon(Icons.delete),
-                        ),
-                        // Ask user for confirmation before deleting
-                        confirmDismiss: (direction) async {
-                          return await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return direction == DismissDirection.endToStart
-                                    ? DeleteExercise(
-                                        userId: widget.userId,
-                                        selectedDate: widget.selectedDate,
-                                        exerciseId: _exerciseList[index].id,
-                                        exerciseName: _exerciseList[index].name,
-                                      )
-                                    : ModifyExercise(
-                                        userId: widget.userId,
-                                        selectedDate: widget.selectedDate,
-                                        exercise: _exerciseList[index]);
-                              });
-                        },
-                        child: _exerciseList[index].build(context));
-                  })
-              : _error == null
-                  ? CopyWorkout(
-                      databaseReference: _workoutRef,
-                      userId: widget.userId,
-                      selectedDate: widget.selectedDate)
-                  : Container(
-                      alignment: Alignment.topCenter,
-                      margin: const EdgeInsets.only(top: 30),
-                      child: Text(
-                          'Error retrieving exercises:\n${_error!.message}')),
-        ),
-        WorkoutNotes(userId: widget.userId, selectedDate: widget.selectedDate),
-        AddExercise(
-          userId: widget.userId,
-          selectedDate: widget.selectedDate,
-          databaseReference: _workoutRef,
-        )
-      ]),
+    return Flexible(
+      fit: FlexFit.loose,
+      child: _error == null && _exerciseList.isNotEmpty
+          ? ListView.builder(
+              itemCount: _exerciseList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Dismissible(
+                    key: Key(_exerciseList[index].id),
+                    direction: DismissDirection.horizontal,
+                    dismissThresholds: const <DismissDirection, double>{
+                      DismissDirection.endToStart: 0.5,
+                    },
+                    background: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.deepPurple,
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(left: 10.0),
+                      margin: EdgeInsets.fromLTRB(
+                          MediaQuery.of(context).size.width * 0.1,
+                          0,
+                          MediaQuery.of(context).size.width * 0.1,
+                          10),
+                      child: const Icon(Icons.edit),
+                    ),
+                    secondaryBackground: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.deepPurple,
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 10.0),
+                      margin: EdgeInsets.fromLTRB(
+                          MediaQuery.of(context).size.width * 0.1,
+                          0,
+                          MediaQuery.of(context).size.width * 0.1,
+                          10),
+                      child: const Icon(Icons.delete),
+                    ),
+                    // Ask user for confirmation before deleting
+                    confirmDismiss: (direction) async {
+                      return await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return direction == DismissDirection.endToStart
+                                ? DeleteExercise(
+                                    userId: widget.userId,
+                                    selectedDate: widget.selectedDate,
+                                    exerciseId: _exerciseList[index].id,
+                                    exerciseName: _exerciseList[index].name,
+                                  )
+                                : ModifyExercise(
+                                    userId: widget.userId,
+                                    selectedDate: widget.selectedDate,
+                                    exercise: _exerciseList[index]);
+                          });
+                    },
+                    child: _exerciseList[index].build(context));
+              })
+          : _error == null
+              ? CopyWorkout(
+                  databaseReference: _workoutRef,
+                  userId: widget.userId,
+                  selectedDate: widget.selectedDate)
+              : Container(
+                  alignment: Alignment.topCenter,
+                  margin: const EdgeInsets.only(top: 30),
+                  child:
+                      Text('Error retrieving exercises:\n${_error!.message}')),
     );
   }
 }

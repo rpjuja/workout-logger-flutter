@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'workout_widgets/exercise_list.dart';
@@ -23,34 +20,16 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
   @override
   String? get restorationId => "home_page";
   final String _userId = '1';
-  late final FirebaseDatabase _database;
+
   late final DatabaseReference _userRef;
 
   final RestorableDateTime _selectedDate = RestorableDateTime(DateTime.now());
 
-  bool _initialized = false;
-
   @override
   void initState() {
-    init();
     super.initState();
-  }
-
-  Future<void> init() async {
-    _database = FirebaseDatabase.instance;
-    _userRef = _database.ref("/users/");
-
-    // Enable disk persistence on mobile devices
-    if (!kIsWeb) {
-      _database.setPersistenceEnabled(true);
-      _database.setPersistenceCacheSizeBytes(10000000);
-    }
-
+    _userRef = FirebaseDatabase.instance.ref("/users/");
     _getUserData();
-
-    setState(() {
-      _initialized = true;
-    });
   }
 
   void _getUserData() async {
@@ -101,24 +80,20 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
             shadowColor: Colors.deepPurple[300],
             title: const Text("Workout Tracker"),
           ),
-          body: !_initialized
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  children: [
-                    DateScroll(
-                        date: _selectedDate.value,
-                        dateAdded: _dateAdded,
-                        dateSubtracted: _dateSubtracted),
-                    ExerciseList(
-                        userId: _userId, selectedDate: _selectedDate.value),
-                    WorkoutNotes(
-                        userId: _userId, selectedDate: _selectedDate.value),
-                    AddExercise(
-                      userId: _userId,
-                      selectedDate: _selectedDate.value,
-                    ),
-                  ],
-                ),
+          body: Column(
+            children: [
+              DateScroll(
+                  date: _selectedDate.value,
+                  dateAdded: _dateAdded,
+                  dateSubtracted: _dateSubtracted),
+              ExerciseList(userId: _userId, selectedDate: _selectedDate.value),
+              WorkoutNotes(userId: _userId, selectedDate: _selectedDate.value),
+              AddExercise(
+                userId: _userId,
+                selectedDate: _selectedDate.value,
+              ),
+            ],
+          ),
           bottomNavigationBar:
               NavBar(date: _selectedDate.value, dateChanged: _dateChanged)),
     );

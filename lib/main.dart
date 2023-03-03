@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -9,15 +10,36 @@ FirebaseDatabase database = FirebaseDatabase.instance;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final FirebaseDatabase _database;
+  bool _initialized = false;
 
   final Future<FirebaseApp> _fbApp = Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Enable disk persistence on mobile devices
+  void setPersistence() async {
+    _database = FirebaseDatabase.instance;
+
+    if (!kIsWeb) {
+      _database.setPersistenceEnabled(true);
+      _database.setPersistenceCacheSizeBytes(10000000);
+    }
+    _initialized = true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +65,10 @@ class MyApp extends StatelessWidget {
               print('You have an error! ${snapshot.error.toString()}');
               return const Text('Something went wrong');
             } else if (snapshot.hasData) {
-              return const HomePage();
+              setPersistence();
+              return !_initialized
+                  ? const Center(child: CircularProgressIndicator())
+                  : const HomePage();
             } else {
               return const Center(
                 child: CircularProgressIndicator(),

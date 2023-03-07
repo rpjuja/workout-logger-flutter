@@ -47,6 +47,7 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   void dispose() {
     super.dispose();
     _notesFocusNode.dispose();
+    _notesController.dispose();
     _workoutSubscription.cancel();
   }
 

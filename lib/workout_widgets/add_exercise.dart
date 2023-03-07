@@ -26,10 +26,10 @@ class _AddExerciseState extends State<AddExercise> {
 
   FirebaseException? _error;
 
-  final _name = TextEditingController();
-  final _sets = TextEditingController();
-  final _reps = TextEditingController();
-  final _weight = TextEditingController();
+  final _nameController = TextEditingController();
+  final _setsController = TextEditingController();
+  final _repsController = TextEditingController();
+  final _weightController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool _isNumeric(string) => num.tryParse(string) != null;
@@ -42,11 +42,20 @@ class _AddExerciseState extends State<AddExercise> {
         FirebaseDatabase.instance.ref("exercises");
   }
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _setsController.dispose();
+    _repsController.dispose();
+    _weightController.dispose();
+    super.dispose();
+  }
+
   void _clearTextFields() {
-    _name.clear();
-    _sets.clear();
-    _reps.clear();
-    _weight.clear();
+    _nameController.clear();
+    _setsController.clear();
+    _repsController.clear();
+    _weightController.clear();
   }
 
   void _addExercise() async {
@@ -56,10 +65,10 @@ class _AddExerciseState extends State<AddExercise> {
         _workoutRef.child('${widget.userId}/$queryDate').push().key;
     try {
       await _workoutRef.child("${widget.userId}/$queryDate/$exerciseId").set({
-        'name': _name.text,
-        'sets': _sets.text,
-        'reps': _reps.text,
-        'weight': _weight.text,
+        'name': _nameController.text,
+        'sets': _setsController.text,
+        'reps': _repsController.text,
+        'weight': _weightController.text,
       });
       print('Connected to the database and wrote data');
       _clearTextFields();
@@ -92,7 +101,7 @@ class _AddExerciseState extends State<AddExercise> {
                         children: [
                           TextFormField(
                             key: const Key('exerciseNameField'),
-                            controller: _name,
+                            controller: _nameController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a name';
@@ -102,7 +111,7 @@ class _AddExerciseState extends State<AddExercise> {
                             decoration: InputDecoration(
                               hintText: 'Exercise Name',
                               suffixIcon: IconButton(
-                                onPressed: _name.clear,
+                                onPressed: _nameController.clear,
                                 icon: const Icon(Icons.clear),
                               ),
                             ),
@@ -113,7 +122,7 @@ class _AddExerciseState extends State<AddExercise> {
                               Expanded(
                                 child: TextFormField(
                                   key: const Key('exerciseSetsField'),
-                                  controller: _sets,
+                                  controller: _setsController,
                                   validator: (value) {
                                     if (value == null || !_isNumeric(value)) {
                                       return 'Please enter a number';
@@ -133,7 +142,7 @@ class _AddExerciseState extends State<AddExercise> {
                               Expanded(
                                 child: TextFormField(
                                   key: const Key('exerciseRepsField'),
-                                  controller: _reps,
+                                  controller: _repsController,
                                   validator: (value) {
                                     if (value == null || !_isNumeric(value)) {
                                       return 'Please enter a number';
@@ -153,7 +162,7 @@ class _AddExerciseState extends State<AddExercise> {
                               Expanded(
                                 child: TextFormField(
                                   key: const Key('exerciseWeightField'),
-                                  controller: _weight,
+                                  controller: _weightController,
                                   validator: (value) {
                                     if (value == null || !_isNumeric(value)) {
                                       return 'Please enter a number';

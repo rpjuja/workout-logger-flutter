@@ -27,10 +27,10 @@ class _ModifyExerciseState extends State<ModifyExercise> {
 
   FirebaseException? _error;
 
-  final _name = TextEditingController();
-  final _sets = TextEditingController();
-  final _reps = TextEditingController();
-  final _weight = TextEditingController();
+  final _nameController = TextEditingController();
+  final _setsController = TextEditingController();
+  final _repsController = TextEditingController();
+  final _weightController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool _isNumeric(string) => num.tryParse(string) != null;
@@ -38,10 +38,19 @@ class _ModifyExerciseState extends State<ModifyExercise> {
   @override
   void initState() {
     super.initState();
-    _name.text = widget.exercise.name;
-    _sets.text = widget.exercise.sets;
-    _reps.text = widget.exercise.reps;
-    _weight.text = widget.exercise.weight;
+    _nameController.text = widget.exercise.name;
+    _setsController.text = widget.exercise.sets;
+    _repsController.text = widget.exercise.reps;
+    _weightController.text = widget.exercise.weight;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _setsController.dispose();
+    _repsController.dispose();
+    _weightController.dispose();
+    super.dispose();
   }
 
   void _modifyExercise() async {
@@ -51,10 +60,10 @@ class _ModifyExerciseState extends State<ModifyExercise> {
       await _workoutRef
           .child("${widget.userId}/$queryDate/${widget.exercise.id}")
           .set({
-        'name': _name.text,
-        'sets': _sets.text,
-        'reps': _reps.text,
-        'weight': _weight.text,
+        'name': _nameController.text,
+        'sets': _setsController.text,
+        'reps': _repsController.text,
+        'weight': _weightController.text,
       });
       print('Connected to the database and wrote data');
     } on FirebaseException catch (err) {
@@ -74,7 +83,7 @@ class _ModifyExerciseState extends State<ModifyExercise> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
-              controller: _name,
+              controller: _nameController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a name';
@@ -84,7 +93,7 @@ class _ModifyExerciseState extends State<ModifyExercise> {
               decoration: InputDecoration(
                 hintText: 'Exercise Name',
                 suffixIcon: IconButton(
-                  onPressed: _name.clear,
+                  onPressed: _nameController.clear,
                   icon: const Icon(Icons.clear),
                 ),
               ),
@@ -94,7 +103,7 @@ class _ModifyExerciseState extends State<ModifyExercise> {
               children: [
                 Expanded(
                   child: TextFormField(
-                    controller: _sets,
+                    controller: _setsController,
                     validator: (value) {
                       if (value == null || !_isNumeric(value)) {
                         return 'Please enter a number';
@@ -113,7 +122,7 @@ class _ModifyExerciseState extends State<ModifyExercise> {
                 ),
                 Expanded(
                   child: TextFormField(
-                    controller: _reps,
+                    controller: _repsController,
                     validator: (value) {
                       if (value == null || !_isNumeric(value)) {
                         return 'Please enter a number';
@@ -132,7 +141,7 @@ class _ModifyExerciseState extends State<ModifyExercise> {
                 ),
                 Expanded(
                   child: TextFormField(
-                    controller: _weight,
+                    controller: _weightController,
                     validator: (value) {
                       if (value == null || !_isNumeric(value)) {
                         return 'Please enter a number';

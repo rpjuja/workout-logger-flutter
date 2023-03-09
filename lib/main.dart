@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'auth_widgets/auth_page.dart';
 import 'home_page.dart';
 
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -44,38 +46,56 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Workout logger',
-      theme: ThemeData(
+        title: 'Workout logger',
+        theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
               .copyWith(secondary: Colors.deepPurple[300]),
           textTheme: const TextTheme(
-            titleLarge: TextStyle(fontSize: 24.0),
+            titleLarge: TextStyle(fontSize: 26.0),
             bodyLarge: TextStyle(fontSize: 20.0),
             bodyMedium: TextStyle(fontSize: 18.0),
             labelLarge: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
-          )).copyWith(
-        dividerColor: Colors.deepPurple[200],
-      ),
-      // Show the app once firebase has finished initializing
-      home: FutureBuilder(
-          future: _fbApp,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              // ignore: avoid_print
-              print('You have an error! ${snapshot.error.toString()}');
-              return const Text('Something went wrong');
-            } else if (snapshot.hasData) {
-              setPersistence();
-              return !_initialized
-                  ? const Center(child: CircularProgressIndicator())
-                  : const HomePage();
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }),
-      // routes: {}
-    );
+          ),
+          inputDecorationTheme: const InputDecorationTheme(
+            errorStyle: TextStyle(color: Colors.red, fontSize: 16),
+          ),
+        ).copyWith(
+          dividerColor: Colors.deepPurple[200],
+        ),
+        debugShowCheckedModeBanner: false,
+        // Show the app once firebase has finished initializing
+        home: FutureBuilder(
+            future: _fbApp,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                // ignore: avoid_print
+                print('You have an error! ${snapshot.error.toString()}');
+                return const Text('Something went wrong');
+              } else if (snapshot.hasData) {
+                setPersistence();
+                return !_initialized
+                    ? const Center(child: CircularProgressIndicator())
+                    // If user is not signed in, show the AuthPage
+                    : StreamBuilder(
+                        stream: FirebaseAuth.instance.authStateChanges(),
+                        builder: (BuildContext context, snapshot) {
+                          if (snapshot.hasData) {
+                            print('User is signed in!');
+                            return const HomePage();
+                          } else {
+                            print('User is currently signed out!');
+                            return const AuthPage();
+                          }
+                        });
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
+        routes: {
+          '/home': (context) => const HomePage(),
+          '/auth': (context) => const AuthPage(),
+        });
   }
 }

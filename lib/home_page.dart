@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'workout_widgets/exercise_list.dart';
@@ -19,28 +19,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with RestorationMixin {
   @override
   String? get restorationId => "home_page";
-  final String _userId = '1';
-
-  late final DatabaseReference _userRef;
+  late final User _user;
 
   final RestorableDateTime _selectedDate = RestorableDateTime(DateTime.now());
 
   @override
   void initState() {
     super.initState();
-    _userRef = FirebaseDatabase.instance.ref("/users/");
     _getUserData();
   }
 
   void _getUserData() async {
     try {
-      final snapshot =
-          await _userRef.child(_userId).once(DatabaseEventType.value);
-      if (snapshot.snapshot.value != null) {
-        print('Connected to the database and read ${snapshot.snapshot.value}');
-      } else {
-        print('Connected to the database but no data found');
-      }
+      setState(() {
+        _user = FirebaseAuth.instance.currentUser!;
+      });
     } catch (e) {
       print(e);
     }
@@ -65,6 +58,14 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
     });
   }
 
+  void signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
     registerForRestoration(_selectedDate, 'selected_date');
@@ -79,6 +80,12 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
             elevation: 10,
             shadowColor: Colors.deepPurple[300],
             title: const Text("Workout Tracker"),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () => signOut(),
+              ),
+            ],
           ),
           body: Column(
             children: [
@@ -86,10 +93,12 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
                   date: _selectedDate.value,
                   dateAdded: _dateAdded,
                   dateSubtracted: _dateSubtracted),
-              ExerciseList(userId: _userId, selectedDate: _selectedDate.value),
-              WorkoutNotes(userId: _userId, selectedDate: _selectedDate.value),
+              ExerciseList(
+                  userId: _user.uid, selectedDate: _selectedDate.value),
+              WorkoutNotes(
+                  userId: _user.uid, selectedDate: _selectedDate.value),
               AddExercise(
-                userId: _userId,
+                userId: _user.uid,
                 selectedDate: _selectedDate.value,
               ),
             ],

@@ -176,7 +176,7 @@ class _AuthPageState extends State<AuthPage> {
                             ? Container(
                                 width: MediaQuery.of(context).size.width * 0.5,
                                 // Add top margin to separate from other password field
-                                margin: const EdgeInsets.fromLTRB(0, 20, 0, 50),
+                                margin: const EdgeInsets.fromLTRB(0, 20, 0, 30),
                                 child: TextFormField(
                                   controller: _confirmPasswordController,
                                   validator: (value) {
@@ -203,7 +203,7 @@ class _AuthPageState extends State<AuthPage> {
                       ? Container(
                           alignment: Alignment.centerRight,
                           margin: EdgeInsets.fromLTRB(0, 0,
-                              MediaQuery.of(context).size.width * 0.25, 50),
+                              MediaQuery.of(context).size.width * 0.25, 30),
                           child: TextButton(
                               style: ButtonStyle(
                                   foregroundColor: MaterialStateProperty.all(
@@ -217,7 +217,7 @@ class _AuthPageState extends State<AuthPage> {
                       : const SizedBox.shrink(),
                   _error != null
                       ? Container(
-                          margin: const EdgeInsets.fromLTRB(20, 0, 10, 20),
+                          margin: const EdgeInsets.only(bottom: 30),
                           child: Text(getAuthErrorMessage(_error!),
                               style: const TextStyle(
                                   color: Colors.red, fontSize: 16)))

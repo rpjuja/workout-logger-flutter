@@ -23,6 +23,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   late final TextEditingController _emailController;
   final _formKey = GlobalKey<FormState>();
+  bool _resetEmailSent = false;
 
   @override
   void initState() {
@@ -40,6 +41,9 @@ class _ResetPasswordState extends State<ResetPassword> {
   void _resetPassword() async {
     try {
       await _auth.sendPasswordResetEmail(email: _emailController.text);
+      setState(() {
+        _resetEmailSent = true;
+      });
     } on FirebaseAuthException catch (e) {
       setState(() {
         _error = e;
@@ -79,7 +83,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             key: _formKey,
             child: Container(
               width: MediaQuery.of(context).size.width * 0.5,
-              margin: const EdgeInsets.only(bottom: 50),
+              margin: const EdgeInsets.only(bottom: 30),
               child: TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -97,9 +101,17 @@ class _ResetPasswordState extends State<ResetPassword> {
           ),
           _error != null
               ? Container(
-                  margin: const EdgeInsets.fromLTRB(20, 0, 10, 20),
+                  margin: const EdgeInsets.only(bottom: 30),
                   child: Text(getAuthErrorMessage(_error!),
                       style: const TextStyle(color: Colors.red, fontSize: 16)))
+              : const SizedBox.shrink(),
+          _resetEmailSent
+              ? Container(
+                  margin: const EdgeInsets.only(bottom: 30),
+                  child: const Text(
+                    'Password reset email sent',
+                    style: TextStyle(color: Colors.green, fontSize: 16),
+                  ))
               : const SizedBox.shrink(),
           ElevatedButton(
             style: ButtonStyles.shadowPadding,

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'auth_widgets/auth_service.dart';
 import 'workout_widgets/exercise_list.dart';
 import 'workout_widgets/add_exercise.dart';
 import 'workout_widgets/workout_notes.dart';
@@ -58,14 +59,6 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
     });
   }
 
-  void signOut() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-    } on FirebaseException catch (e) {
-      print(e);
-    }
-  }
-
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
     registerForRestoration(_selectedDate, 'selected_date');
@@ -83,7 +76,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
             actions: [
               IconButton(
                 icon: const Icon(Icons.logout),
-                onPressed: () => signOut(),
+                onPressed: () => AuthService().signOut(context),
               ),
             ],
           ),

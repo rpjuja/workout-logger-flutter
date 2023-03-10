@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'auth_widgets/auth_page.dart';
+import 'auth_widgets/auth_service.dart';
 import 'home_page.dart';
 
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -73,20 +74,10 @@ class _MyAppState extends State<MyApp> {
                 return const Text('Something went wrong');
               } else if (snapshot.hasData) {
                 setPersistence();
-                return !_initialized
-                    ? const Center(child: CircularProgressIndicator())
-                    // If user is not signed in, show the AuthPage
-                    : StreamBuilder(
-                        stream: FirebaseAuth.instance.authStateChanges(),
-                        builder: (BuildContext context, snapshot) {
-                          if (snapshot.hasData) {
-                            print('User is signed in!');
-                            return const HomePage();
-                          } else {
-                            print('User is currently signed out!');
-                            return const AuthPage();
-                          }
-                        });
+                return _initialized
+                    // handelAuthState shows login page if user is not logged in, otherwise shows home page
+                    ? AuthService().handleAuthState()
+                    : const Center(child: CircularProgressIndicator());
               } else {
                 return const Center(
                   child: CircularProgressIndicator(),

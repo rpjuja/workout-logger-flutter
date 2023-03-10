@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
 import 'package:workout_logger_app/styles.dart';
-import 'package:workout_logger_app/error_messages.dart';
 import 'package:workout_logger_app/auth_widgets/reset_password.dart';
+import 'package:workout_logger_app/custom_icons_icons.dart';
+
+import 'auth_service.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({
@@ -16,9 +17,6 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  late final FirebaseAuth _auth;
-  FirebaseException? _error;
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -28,43 +26,11 @@ class _AuthPageState extends State<AuthPage> {
   bool _resetPasswordMode = false;
 
   @override
-  void initState() {
-    super.initState();
-    _auth = FirebaseAuth.instance;
-  }
-
-  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
-  }
-
-  void _signUp() async {
-    try {
-      await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _error = e;
-      });
-    }
-  }
-
-  void _logIn() async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _error = e;
-      });
-    }
   }
 
   void _resetPasswordModeChange() {
@@ -215,26 +181,45 @@ class _AuthPageState extends State<AuthPage> {
                               },
                               child: const Text('Forgot password?')))
                       : const SizedBox.shrink(),
-                  _error != null
-                      ? Container(
-                          margin: const EdgeInsets.only(bottom: 30),
-                          child: Text(getAuthErrorMessage(_error!),
-                              style: const TextStyle(
-                                  color: Colors.red, fontSize: 16)))
-                      : const SizedBox.shrink(),
                   Container(
                     margin: const EdgeInsets.only(bottom: 30),
                     child: _loginMode
-                        ? ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) _logIn();
-                            },
-                            style: ButtonStyles.shadowPadding,
-                            child: const Text('Log in'),
+                        ? Column(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    AuthService().signIn(
+                                        context,
+                                        _emailController.text,
+                                        _passwordController.text);
+                                  }
+                                },
+                                style: ButtonStyles.shadowPadding,
+                                child: const Text('Log in'),
+                              ),
+                              const SizedBox(height: 30),
+                              // Add a button for 3rd paty authentication with Google
+                              ElevatedButton.icon(
+                                style: ButtonStyles.shadowPadding.copyWith(
+                                    padding: MaterialStateProperty.all(
+                                        const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 15))),
+                                icon: const Icon(CustomIcons.google_1),
+                                label: const Text('Sign in with Google'),
+                                onPressed: () =>
+                                    AuthService().signInWithGoogle(context),
+                              ),
+                            ],
                           )
                         : ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) _signUp();
+                              if (_formKey.currentState!.validate()) {
+                                AuthService().signUp(
+                                    context,
+                                    _emailController.text,
+                                    _passwordController.text);
+                              }
                             },
                             style: ButtonStyles.shadowPadding,
                             child: const Text('Sign up'),

@@ -18,3 +18,26 @@ String getAuthErrorMessage(FirebaseException error) {
       return 'An error occurred';
   }
 }
+
+String getGoogleAuthErrorMessage(FirebaseException error) {
+  switch (error.code) {
+    case 'account-exists-with-different-credential':
+      return 'Account exists with different credential';
+    case 'invalid-credential':
+      return 'Invalid credential';
+    case 'operation-not-allowed':
+      return 'Operation not allowed';
+    case 'user-disabled':
+      return 'User disabled';
+    case 'user-not-found':
+      return 'Invalid email or password';
+    case 'wrong-password':
+      return 'Invalid email or password';
+    case 'invalid-verification-code':
+      return 'Invalid verification code';
+    case 'invalid-verification-id':
+      return 'Invalid verification id';
+    default:
+      return 'An error occurred';
+  }
+}

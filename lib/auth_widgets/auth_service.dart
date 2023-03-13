@@ -28,8 +28,9 @@ class AuthService {
 
   signUp(BuildContext context, String email, String password) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
+      UserCredential user = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      await user.user?.sendEmailVerification();
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

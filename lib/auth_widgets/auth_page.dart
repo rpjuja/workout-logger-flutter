@@ -113,6 +113,7 @@ class _AuthPageState extends State<AuthPage> {
                             },
                             decoration: const InputDecoration(
                                 labelText: 'Email',
+                                errorMaxLines: 2,
                                 contentPadding: EdgeInsets.only(left: 10)),
                           ),
                         ),
@@ -135,6 +136,7 @@ class _AuthPageState extends State<AuthPage> {
                             autocorrect: false,
                             decoration: const InputDecoration(
                                 labelText: 'Password',
+                                errorMaxLines: 2,
                                 contentPadding: EdgeInsets.only(left: 10)),
                           ),
                         ),
@@ -157,6 +159,7 @@ class _AuthPageState extends State<AuthPage> {
                                   autocorrect: false,
                                   decoration: const InputDecoration(
                                       labelText: 'Confirm password',
+                                      errorMaxLines: 2,
                                       contentPadding:
                                           EdgeInsets.only(left: 10)),
                                 ),

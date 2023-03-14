@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:workout_logger_app/top_bar.dart';
 
-import 'auth_widgets/auth_service.dart';
 import 'workout_widgets/exercise_list.dart';
 import 'workout_widgets/add_exercise.dart';
 import 'workout_widgets/workout_notes.dart';
@@ -69,17 +69,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus() /* hide keyboard */,
       child: Scaffold(
-          appBar: AppBar(
-            elevation: 10,
-            shadowColor: Colors.deepPurple[300],
-            title: const Text("Workout Tracker"),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.logout),
-                onPressed: () => AuthService().signOut(context),
-              ),
-            ],
-          ),
+          appBar: const TopBar(),
           body: Column(
             children: [
               DateScroll(

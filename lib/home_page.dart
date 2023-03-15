@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:workout_logger_app/error_messages.dart';
 import 'package:workout_logger_app/top_bar.dart';
 
 import 'workout_widgets/exercise_list.dart';
@@ -35,8 +36,9 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
       setState(() {
         _user = FirebaseAuth.instance.currentUser!;
       });
-    } catch (e) {
-      print(e);
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(getAuthErrorMessage(e))));
     }
   }
 

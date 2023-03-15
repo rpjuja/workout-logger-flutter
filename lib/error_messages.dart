@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 // Check authentication error code and return an appropriate message for user
-String getAuthErrorMessage(FirebaseException error) {
+String getAuthErrorMessage(FirebaseAuthException error) {
   switch (error.code) {
     case 'invalid-email':
       return 'Invalid email';
@@ -14,12 +14,16 @@ String getAuthErrorMessage(FirebaseException error) {
       return 'Email already in use';
     case 'weak-password':
       return 'Password is too weak';
+    case 'requires-recent-login':
+      return 'Please reauthenticate';
+    case 'invalid-credential':
+      return 'Invalid credentials';
     default:
       return 'An error occurred';
   }
 }
 
-String getGoogleAuthErrorMessage(FirebaseException error) {
+String getGoogleAuthErrorMessage(FirebaseAuthException error) {
   switch (error.code) {
     case 'account-exists-with-different-credential':
       return 'Account exists with different credential';

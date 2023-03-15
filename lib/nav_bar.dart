@@ -84,7 +84,7 @@ class _NavBarState extends State<NavBar> with RestorationMixin {
           _navBarIndex = index;
         });
         if (index == 0) {
-          // Navigator.pushNamed(context, '/');
+          Navigator.popUntil(context, ModalRoute.withName('/'));
         } else if (index == 1) {
           // Navigator.pushNamed(context, '/progression');
         } else if (index == 2) {

@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
 import 'package:workout_logger_app/styles.dart';
-import 'package:workout_logger_app/error_messages.dart';
-
 import 'auth_service.dart';
 
 class ResetPassword extends StatefulWidget {
@@ -20,8 +17,6 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
-  FirebaseException? _error;
-
   late final TextEditingController _emailController;
   final _formKey = GlobalKey<FormState>();
 
@@ -61,7 +56,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(bottom: 30),
+            margin: const EdgeInsets.fromLTRB(30, 0, 30, 30),
             child: const Text(
                 'Enter your email and we will send you a password reset link'),
           ),
@@ -85,12 +80,6 @@ class _ResetPasswordState extends State<ResetPassword> {
               ),
             ),
           ),
-          _error != null
-              ? Container(
-                  margin: const EdgeInsets.only(bottom: 30),
-                  child: Text(getAuthErrorMessage(_error!),
-                      style: const TextStyle(color: Colors.red, fontSize: 16)))
-              : const SizedBox.shrink(),
           ElevatedButton(
             style: ButtonStyles.shadowPadding,
             onPressed: () {

@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:workout_logger_app/profile_widgets/profile_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -57,10 +57,6 @@ class _MyAppState extends State<MyApp> {
             bodyMedium: TextStyle(fontSize: 18.0),
             labelLarge: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
           ),
-          inputDecorationTheme: const InputDecorationTheme(
-            errorStyle: TextStyle(color: Colors.red, fontSize: 16),
-          ),
-        ).copyWith(
           dividerColor: Colors.deepPurple[200],
         ),
         debugShowCheckedModeBanner: false,
@@ -87,6 +83,7 @@ class _MyAppState extends State<MyApp> {
         routes: {
           '/home': (context) => const HomePage(),
           '/auth': (context) => const AuthPage(),
+          '/profile': (context) => const ProfilePage(),
         });
   }
 }

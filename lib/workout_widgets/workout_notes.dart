@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:workout_logger_app/error_messages.dart';
 
 class WorkoutNotes extends StatefulWidget {
   const WorkoutNotes(
@@ -51,44 +52,43 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
     _workoutSubscription.cancel();
   }
 
-  void _getNotesAndListen() async {
+  Future<void> _getNotesAndListen() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
 
     _workoutSubscription =
         _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
       (event) {
         if (event.snapshot.exists) {
-          print('Connected to the database and read ${event.snapshot.value}');
           Map<String, dynamic> notes =
               Map<String, dynamic>.from(event.snapshot.value as Map);
           setState(() {
             _notesController.text = notes['notes'];
           });
         } else {
-          print('Connected to the database but no data found');
           setState(() {
             _notesController.text = '';
           });
         }
       },
       onError: (Object o) {
-        final error = o as FirebaseException;
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error reading notes:/n${error.message}')));
+        final e = o as FirebaseException;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Error retrieving notes:/n${getErrorMessage(e)}')));
       },
     );
   }
 
-  void _setWorkoutData() async {
+  Future<void> _setWorkoutData() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
     try {
       await _workoutRef
           .child("${widget.userId}/$queryDate")
-          .update({'notes': _notesController.text});
-      print('Connected to the database and wrote data');
-    } on FirebaseException catch (err) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving notes:/n${err.message}')));
+          .update({'notes': _notesController.text}).then((value) =>
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Notes saved'))));
+    } on FirebaseException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error saving notes:/n${getErrorMessage(e)}')));
     }
   }
 
@@ -142,11 +142,7 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
               borderSide: BorderSide(color: Colors.deepPurple, width: 2),
               borderRadius: BorderRadius.all(Radius.circular(10))),
           suffixIcon: IconButton(
-            onPressed: () => {
-              _setWorkoutData(),
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Notes saved')))
-            },
+            onPressed: () => _setWorkoutData(),
             icon: const Icon(Icons.save_alt),
             iconSize: 30,
             splashRadius: 20,

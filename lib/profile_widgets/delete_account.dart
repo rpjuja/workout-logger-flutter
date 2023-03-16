@@ -19,7 +19,7 @@ class DeleteAccount extends StatefulWidget {
 }
 
 class _DeleteAccountState extends State<DeleteAccount> {
-  void _deleteAccount() async {
+  Future<void> _deleteAccount() async {
     try {
       await widget.user
           .delete()
@@ -40,8 +40,8 @@ class _DeleteAccountState extends State<DeleteAccount> {
           widget.user.providerData[0].providerId == 'google.com') {
         AuthService()
             .reauthenticateGoogleUser(context)
-            .then(() => _deleteAccount())
-            .then(() => Navigator.of(context).pop(true));
+            .then((value) => _deleteAccount())
+            .then((value) => Navigator.of(context).pop(true));
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
@@ -58,9 +58,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
       actions: <Widget>[
         ElevatedButton(
             style: ButtonStyles.shadowPadding,
-            onPressed: () => {
-                  _deleteAccount(),
-                },
+            onPressed: () => _deleteAccount(),
             child: const Text("Delete")),
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),

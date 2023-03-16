@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:workout_logger_app/styles.dart';
 
-import '../main.dart';
-
 class CopyWorkout extends StatefulWidget {
   const CopyWorkout(
       {Key? key,
@@ -76,7 +74,7 @@ class _CopyWorkoutState extends State<CopyWorkout> with RestorationMixin {
         'date_picker_route_future_for_copy_workout');
   }
 
-  void _copyPreviousWorkout(date) async {
+  Future<void> _copyPreviousWorkout(date) async {
     final previousQueryDate = DateFormat("dd,MM,yyyy").format(date);
     final previousWorkout =
         await _workoutRef.child("${widget.userId}/$previousQueryDate").once();
@@ -85,10 +83,12 @@ class _CopyWorkoutState extends State<CopyWorkout> with RestorationMixin {
     if (previousWorkout.snapshot.exists) {
       await _workoutRef
           .child("${widget.userId}/$currentqueryDate")
-          .set(previousWorkout.snapshot.value);
+          .set(previousWorkout.snapshot.value)
+          .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Workout copied from $date'))));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Found no workout to copy')));
+          const SnackBar(content: Text('No workout to copy on that date')));
     }
   }
 

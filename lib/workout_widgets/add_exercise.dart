@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../error_messages.dart';
 import '../styles.dart';
 
 class AddExercise extends StatefulWidget {
@@ -23,8 +24,6 @@ class AddExercise extends StatefulWidget {
 
 class _AddExerciseState extends State<AddExercise> {
   late final DatabaseReference _workoutRef;
-
-  FirebaseException? _error;
 
   final _nameController = TextEditingController();
   final _setsController = TextEditingController();
@@ -58,24 +57,27 @@ class _AddExerciseState extends State<AddExercise> {
     _weightController.clear();
   }
 
-  void _addExercise() async {
+  Future<void> _addExercise() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
 
     var exerciseId =
         _workoutRef.child('${widget.userId}/$queryDate').push().key;
     try {
-      await _workoutRef.child("${widget.userId}/$queryDate/$exerciseId").set({
-        'name': _nameController.text,
-        'sets': _setsController.text,
-        'reps': _repsController.text,
-        'weight': _weightController.text,
-      });
-      print('Connected to the database and wrote data');
-      _clearTextFields();
+      await _workoutRef
+          .child("${widget.userId}/$queryDate/$exerciseId")
+          .set({
+            'name': _nameController.text,
+            'sets': _setsController.text,
+            'reps': _repsController.text,
+            'weight': _weightController.text,
+          })
+          .then((value) => Navigator.of(context).pop(true))
+          .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('${_nameController.text} added'))))
+          .then((value) => _clearTextFields());
     } on FirebaseException catch (err) {
-      setState(() {
-        _error = err;
-      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error adding exercise:/n${getErrorMessage(err)}')));
     }
   }
 
@@ -178,13 +180,6 @@ class _AddExerciseState extends State<AddExercise> {
                               ),
                             ],
                           ),
-                          _error != null
-                              ? Container(
-                                  padding: const EdgeInsets.only(top: 20.0),
-                                  child: Text(
-                                      "Error when adding exercise:\n${_error!.message}}}"),
-                                )
-                              : Container(),
                         ],
                       ),
                       actions: [
@@ -201,7 +196,6 @@ class _AddExerciseState extends State<AddExercise> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               _addExercise();
-                              Navigator.of(context).pop();
                             }
                           },
                           child: const Text('Add'),

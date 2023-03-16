@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
   );
 
   // Enable disk persistence on mobile devices
-  void setPersistence() async {
+  Future<void> setPersistence() async {
     _database = FirebaseDatabase.instance;
 
     if (!kIsWeb) {

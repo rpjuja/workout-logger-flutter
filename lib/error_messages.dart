@@ -1,5 +1,37 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+String getErrorMessage(FirebaseException error) {
+  // list out all the possible errors from realtime database
+  switch (error.code) {
+    case 'permission-denied':
+      return 'Permission denied';
+    case 'database-error':
+      return 'Database error';
+    case 'disconnected':
+      return 'Disconnected';
+    case 'expired-token':
+      return 'Session expired';
+    case 'invalid-token':
+      return 'Invalid token';
+    case 'network-error':
+      return 'Network error';
+    case 'operation-failed':
+      return 'Operation failed';
+    case 'overridden-by-set':
+      return 'Overridden by subsequent set';
+    case 'Unavailable':
+      return 'Unavailable';
+    case 'unknown-error':
+      return 'Unknown error';
+    case 'user-code-exception':
+      return 'User code exception';
+    case 'write-canceled':
+      return 'Write canceled';
+    default:
+      return 'An error occurred';
+  }
+}
+
 // Check authentication error code and return an appropriate message for user
 String getAuthErrorMessage(FirebaseAuthException error) {
   switch (error.code) {
@@ -18,6 +50,10 @@ String getAuthErrorMessage(FirebaseAuthException error) {
       return 'Please reauthenticate';
     case 'invalid-credential':
       return 'Invalid credentials';
+    case 'account-exists-with-different-credential':
+      return 'Account exists with different credentials';
+    case 'user-disabled':
+      return 'User disabled';
     default:
       return 'An error occurred';
   }
@@ -41,6 +77,14 @@ String getGoogleAuthErrorMessage(FirebaseAuthException error) {
       return 'Invalid verification code';
     case 'invalid-verification-id':
       return 'Invalid verification id';
+    case 'missing-verification-code':
+      return 'Missing verification code';
+    case 'missing-verification-id':
+      return 'Missing verification id';
+    case 'session-expired':
+      return 'Session expired';
+    case 'quota-exceeded':
+      return 'Quota exceeded';
     default:
       return 'An error occurred';
   }

@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../error_messages.dart';
+
 class DeleteExercise extends StatefulWidget {
   const DeleteExercise(
       {Key? key,
@@ -25,21 +27,18 @@ class _DeleteExerciseState extends State<DeleteExercise> {
   final DatabaseReference _workoutRef =
       FirebaseDatabase.instance.ref("/exercises/");
 
-  FirebaseException? _error;
-
-  void _deleteExercise() async {
+  Future<void> _deleteExercise() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
     try {
       await _workoutRef
           .child("${widget.userId}/$queryDate/${widget.exerciseId}")
-          .remove();
-
-      print('Deleted data from the database');
-    } on FirebaseException catch (err) {
-      setState(() {
-        print('Connected to the database but no data found');
-        _error = err;
-      });
+          .remove()
+          .then((value) => Navigator.of(context).pop(true))
+          .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('${widget.exerciseName} removed'))));
+    } on FirebaseException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error deleting exercise:/n${getErrorMessage(e)}')));
     }
   }
 
@@ -51,13 +50,8 @@ class _DeleteExerciseState extends State<DeleteExercise> {
       actions: <Widget>[
         ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
-            onPressed: () => {
-                  _deleteExercise(),
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('${widget.exerciseName} removed'))),
-                  Navigator.of(context).pop(true),
-                },
-            child: const Text("DELETE")),
+            onPressed: () => _deleteExercise(),
+            child: const Text("Delete")),
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: const Text("Cancel"),

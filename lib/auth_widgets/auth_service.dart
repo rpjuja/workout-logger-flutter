@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:workout_logger_app/error_messages.dart';
-import 'package:workout_logger_app/profile_widgets/change_password.dart';
 
 import '../home_page.dart';
 import 'auth_page.dart';
@@ -18,16 +17,20 @@ class AuthService {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
-            print('User is signed in!');
+            if (kDebugMode) {
+              print('User is signed in!');
+            }
             return const HomePage();
           } else {
-            print('User is currently signed out!');
+            if (kDebugMode) {
+              print('User is currently signed out!');
+            }
             return const AuthPage();
           }
         });
   }
 
-  signUp(BuildContext context, String email, String password) async {
+  Future<void> signUp(BuildContext context, String email, String password) async {
     try {
       UserCredential user = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -41,7 +44,7 @@ class AuthService {
     }
   }
 
-  signIn(BuildContext context, String email, String password) async {
+  Future<void> signIn(BuildContext context, String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email,
@@ -56,7 +59,7 @@ class AuthService {
     }
   }
 
-  signInWithGoogle(BuildContext context) async {
+  Future<void> signInWithGoogle(BuildContext context) async {
     try {
       // Mobile version of Google sign in
       if (!kIsWeb) {
@@ -85,14 +88,11 @@ class AuthService {
     }
   }
 
-  resetPassword(BuildContext context, String email) async {
+  Future<void> resetPassword(BuildContext context, String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Password reset email sent"),
-        ),
-      );
+      await _auth.sendPasswordResetEmail(email: email).then((value) =>
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Password reset email sent"))));
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -102,7 +102,7 @@ class AuthService {
     }
   }
 
-  changePassword(
+  Future<void> changePassword(
       BuildContext context, String oldPassword, String newPassword) async {
     try {
       await reauthenticate(context, oldPassword);
@@ -120,7 +120,7 @@ class AuthService {
     }
   }
 
-  reauthenticate(BuildContext context, String password) async {
+  Future<void> reauthenticate(BuildContext context, String password) async {
     try {
       final User user = _auth.currentUser!;
       await user.reauthenticateWithCredential(
@@ -131,7 +131,7 @@ class AuthService {
     }
   }
 
-  reauthenticateGoogleUser(BuildContext context) async {
+  Future<void> reauthenticateGoogleUser(BuildContext context) async {
     try {
       // Mobile version of Google reauthentication
       if (!kIsWeb) {
@@ -164,7 +164,7 @@ class AuthService {
     }
   }
 
-  signOut(BuildContext context) async {
+  Future<void> signOut(BuildContext context) async {
     try {
       // Return to home page and sign out
       Navigator.popUntil(context, ModalRoute.withName('/'));

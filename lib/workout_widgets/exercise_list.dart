@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:workout_logger_app/workout_widgets/copy_workout.dart';
 
+import '../error_messages.dart';
 import 'exercise_entry.dart';
 
 import 'modify_exercise.dart';
@@ -30,8 +31,6 @@ class ExerciseList extends StatefulWidget {
 class _ExerciseListState extends State<ExerciseList> {
   late final DatabaseReference _workoutRef;
   late StreamSubscription<DatabaseEvent> _workoutSubscription;
-
-  FirebaseException? _error;
 
   final List<ExerciseEntry> _exerciseList = <ExerciseEntry>[];
 
@@ -61,29 +60,29 @@ class _ExerciseListState extends State<ExerciseList> {
     super.dispose();
   }
 
-  void _getExercisesAndListen() async {
+  Future<void> _getExercisesAndListen() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
     _workoutSubscription =
         _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
       (event) {
         if (event.snapshot.exists) {
-          print('Connected to the database and read ${event.snapshot.value}');
           Map<String, dynamic> exercises =
               Map<String, dynamic>.from(event.snapshot.value as Map);
           _printExercises(exercises);
         } else {
-          print('Connected to the database but no data found');
           setState(() {
             _exerciseList.clear();
           });
         }
       },
       onError: (Object o) {
-        final error = o as FirebaseException;
+        final e = o as FirebaseException;
         setState(() {
           _exerciseList.clear();
-          _error = error;
         });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text('Error retrieving exercises: ${getErrorMessage(e)}}')));
       },
     );
   }
@@ -100,7 +99,6 @@ class _ExerciseListState extends State<ExerciseList> {
           weight: value['weight'],
         ));
       });
-      _error = null;
     });
   }
 
@@ -108,7 +106,7 @@ class _ExerciseListState extends State<ExerciseList> {
   Widget build(BuildContext context) {
     return Flexible(
       fit: FlexFit.loose,
-      child: _error == null && _exerciseList.isNotEmpty
+      child: _exerciseList.isNotEmpty
           ? ListView.builder(
               itemCount: _exerciseList.length,
               itemBuilder: (BuildContext context, int index) {
@@ -164,16 +162,10 @@ class _ExerciseListState extends State<ExerciseList> {
                     },
                     child: _exerciseList[index].build(context));
               })
-          : _error == null
-              ? CopyWorkout(
-                  databaseReference: _workoutRef,
-                  userId: widget.userId,
-                  selectedDate: widget.selectedDate)
-              : Container(
-                  alignment: Alignment.topCenter,
-                  margin: const EdgeInsets.only(top: 30),
-                  child:
-                      Text('Error retrieving exercises:\n${_error!.message}')),
+          : CopyWorkout(
+              databaseReference: _workoutRef,
+              userId: widget.userId,
+              selectedDate: widget.selectedDate),
     );
   }
 }

@@ -38,7 +38,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
     super.dispose();
   }
 
-  void _updateEmail() async {
+  Future<void> _updateEmail() async {
     try {
       await widget.user.updateEmail(_emailController.text);
       widget.stopEditingEmail();

@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
     _getUserData();
   }
 
-  void _getUserData() async {
+  Future<void> _getUserData() async {
     try {
       setState(() {
         _user = FirebaseAuth.instance.currentUser!;

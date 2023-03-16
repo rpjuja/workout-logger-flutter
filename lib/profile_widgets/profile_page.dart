@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  void _getUserData() async {
+  Future<void> _getUserData() async {
     try {
       setState(() {
         _user = FirebaseAuth.instance.currentUser!;
@@ -44,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  void _sendVericiationEmail() async {
+  Future<void> _sendVericiationEmail() async {
     try {
       await _user
           .sendEmailVerification()

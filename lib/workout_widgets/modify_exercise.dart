@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../error_messages.dart';
 import 'exercise_entry.dart';
 
 class ModifyExercise extends StatefulWidget {
@@ -24,8 +25,6 @@ class ModifyExercise extends StatefulWidget {
 class _ModifyExerciseState extends State<ModifyExercise> {
   final DatabaseReference _workoutRef =
       FirebaseDatabase.instance.ref("exercises");
-
-  FirebaseException? _error;
 
   final _nameController = TextEditingController();
   final _setsController = TextEditingController();
@@ -53,23 +52,24 @@ class _ModifyExerciseState extends State<ModifyExercise> {
     super.dispose();
   }
 
-  void _modifyExercise() async {
+  Future<void> _modifyExercise() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
 
     try {
       await _workoutRef
           .child("${widget.userId}/$queryDate/${widget.exercise.id}")
           .set({
-        'name': _nameController.text,
-        'sets': _setsController.text,
-        'reps': _repsController.text,
-        'weight': _weightController.text,
-      });
-      print('Connected to the database and wrote data');
-    } on FirebaseException catch (err) {
-      setState(() {
-        _error = err;
-      });
+            'name': _nameController.text,
+            'sets': _setsController.text,
+            'reps': _repsController.text,
+            'weight': _weightController.text,
+          })
+          .then((value) => Navigator.of(context).pop())
+          .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('${_nameController.text} modified'))));
+    } on FirebaseException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error editing exercise:/n${getErrorMessage(e)}')));
     }
   }
 
@@ -79,93 +79,80 @@ class _ModifyExerciseState extends State<ModifyExercise> {
       key: _formKey,
       child: AlertDialog(
         title: const Text('Modify Exercise'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _nameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a name';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                hintText: 'Exercise Name',
-                suffixIcon: IconButton(
-                  onPressed: _nameController.clear,
-                  icon: const Icon(Icons.clear),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          TextFormField(
+            controller: _nameController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a name';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              hintText: 'Exercise Name',
+              suffixIcon: IconButton(
+                onPressed: _nameController.clear,
+                icon: const Icon(Icons.clear),
+              ),
+            ),
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            Expanded(
+              child: TextFormField(
+                controller: _setsController,
+                validator: (value) {
+                  if (value == null || !_isNumeric(value)) {
+                    return 'Please enter a number';
+                  }
+                  return null;
+                },
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  hintText: 'Sets',
+                  errorMaxLines: 3,
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _setsController,
-                    validator: (value) {
-                      if (value == null || !_isNumeric(value)) {
-                        return 'Please enter a number';
-                      }
-                      return null;
-                    },
-                    textAlign: TextAlign.center,
-                    decoration: const InputDecoration(
-                      hintText: 'Sets',
-                      errorMaxLines: 3,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                  child: TextFormField(
-                    controller: _repsController,
-                    validator: (value) {
-                      if (value == null || !_isNumeric(value)) {
-                        return 'Please enter a number';
-                      }
-                      return null;
-                    },
-                    textAlign: TextAlign.center,
-                    decoration: const InputDecoration(
-                      hintText: 'Reps',
-                      errorMaxLines: 3,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                  child: TextFormField(
-                    controller: _weightController,
-                    validator: (value) {
-                      if (value == null || !_isNumeric(value)) {
-                        return 'Please enter a number';
-                      }
-                      return null;
-                    },
-                    textAlign: TextAlign.center,
-                    decoration: const InputDecoration(
-                      hintText: 'Weight',
-                      errorMaxLines: 3,
-                    ),
-                  ),
-                ),
-              ],
+            const SizedBox(
+              width: 8,
             ),
-            _error != null
-                ? Container(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Text(
-                        "Error when modifying exercise:\n${_error!.message}}}"),
-                  )
-                : Container(),
-          ],
-        ),
+            Expanded(
+              child: TextFormField(
+                controller: _repsController,
+                validator: (value) {
+                  if (value == null || !_isNumeric(value)) {
+                    return 'Please enter a number';
+                  }
+                  return null;
+                },
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  hintText: 'Reps',
+                  errorMaxLines: 3,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Expanded(
+              child: TextFormField(
+                controller: _weightController,
+                validator: (value) {
+                  if (value == null || !_isNumeric(value)) {
+                    return 'Please enter a number';
+                  }
+                  return null;
+                },
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  hintText: 'Weight',
+                  errorMaxLines: 3,
+                ),
+              ),
+            ),
+          ]),
+        ]),
         actions: [
           TextButton(
             onPressed: () => {
@@ -177,7 +164,6 @@ class _ModifyExerciseState extends State<ModifyExercise> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 _modifyExercise();
-                Navigator.of(context).pop();
               }
             },
             child: const Text('Confirm'),

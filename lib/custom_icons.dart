@@ -26,5 +26,6 @@ class CustomIcons {
   static const String? _kFontPkg = null;
 
   static const IconData google_1 = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  // ignore: constant_identifier_names
   static const IconData google_plus_g = IconData(0xf0d5, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

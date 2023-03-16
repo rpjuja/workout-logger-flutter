@@ -3,7 +3,7 @@ import 'package:email_validator/email_validator.dart';
 
 import 'package:workout_logger_app/styles.dart';
 import 'package:workout_logger_app/auth_widgets/reset_password.dart';
-import 'package:workout_logger_app/custom_icons_icons.dart';
+import 'package:workout_logger_app/custom_icons.dart';
 
 import 'auth_service.dart';
 

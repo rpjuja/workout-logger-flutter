@@ -42,6 +42,8 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset:
+          false, // Prevents keyboard from resizing and overflowing the screen
       appBar: AppBar(
         elevation: 10,
         shadowColor: Colors.deepPurple[300],
@@ -101,7 +103,7 @@ class _AuthPageState extends State<AuthPage> {
                     child: Column(
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.6,
                           margin: const EdgeInsets.only(bottom: 30),
                           child: TextFormField(
                             controller: _emailController,
@@ -118,7 +120,7 @@ class _AuthPageState extends State<AuthPage> {
                           ),
                         ),
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.6,
                           // Smaller bottom margin for forgot password button below
                           margin: const EdgeInsets.only(bottom: 10),
                           child: TextFormField(
@@ -142,7 +144,7 @@ class _AuthPageState extends State<AuthPage> {
                         ),
                         !_loginMode
                             ? Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
+                                width: MediaQuery.of(context).size.width * 0.6,
                                 // Add top margin to separate from other password field
                                 margin: const EdgeInsets.fromLTRB(0, 20, 0, 30),
                                 child: TextFormField(
@@ -172,7 +174,7 @@ class _AuthPageState extends State<AuthPage> {
                       ? Container(
                           alignment: Alignment.centerRight,
                           margin: EdgeInsets.fromLTRB(0, 0,
-                              MediaQuery.of(context).size.width * 0.25, 30),
+                              MediaQuery.of(context).size.width * 0.2, 30),
                           child: TextButton(
                               style: ButtonStyle(
                                   foregroundColor: MaterialStateProperty.all(

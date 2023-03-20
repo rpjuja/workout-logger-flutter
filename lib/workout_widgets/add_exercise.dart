@@ -84,130 +84,136 @@ class _AddExerciseState extends State<AddExercise> {
   @override
   Widget build(BuildContext context) {
     return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(30.0),
-      children: [
-        ElevatedButton(
-          key: const Key('addExerciseButton'),
-          style: ButtonStyles.shadowPadding,
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: ((context) {
-                  return Form(
-                    key: _formKey,
-                    child: AlertDialog(
-                      title: const Text('Add Exercise'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            key: const Key('exerciseNameField'),
-                            controller: _nameController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a name';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              hintText: 'Exercise Name',
-                              suffixIcon: IconButton(
-                                onPressed: _nameController.clear,
-                                icon: const Icon(Icons.clear),
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        alignment: MainAxisAlignment.center,
+        buttonPadding: const EdgeInsets.all(30.0),
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: ElevatedButton(
+              key: const Key('addExerciseButton'),
+              style: ButtonStyles.shadowPadding,
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: ((context) {
+                      return Form(
+                        key: _formKey,
+                        child: AlertDialog(
+                          title: const Text('Add Exercise'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Expanded(
-                                child: TextFormField(
-                                  key: const Key('exerciseSetsField'),
-                                  controller: _setsController,
-                                  validator: (value) {
-                                    if (value == null || !_isNumeric(value)) {
-                                      return 'Please enter a number';
-                                    }
-                                    return null;
-                                  },
-                                  textAlign: TextAlign.center,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Sets',
-                                    errorMaxLines: 3,
+                              TextFormField(
+                                key: const Key('exerciseNameField'),
+                                controller: _nameController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a name';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Exercise Name',
+                                  suffixIcon: IconButton(
+                                    onPressed: _nameController.clear,
+                                    icon: const Icon(Icons.clear),
                                   ),
                                 ),
                               ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Expanded(
-                                child: TextFormField(
-                                  key: const Key('exerciseRepsField'),
-                                  controller: _repsController,
-                                  validator: (value) {
-                                    if (value == null || !_isNumeric(value)) {
-                                      return 'Please enter a number';
-                                    }
-                                    return null;
-                                  },
-                                  textAlign: TextAlign.center,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Reps',
-                                    errorMaxLines: 3,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      key: const Key('exerciseSetsField'),
+                                      controller: _setsController,
+                                      validator: (value) {
+                                        if (value == null ||
+                                            !_isNumeric(value)) {
+                                          return 'Please enter a number';
+                                        }
+                                        return null;
+                                      },
+                                      textAlign: TextAlign.center,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Sets',
+                                        errorMaxLines: 3,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Expanded(
-                                child: TextFormField(
-                                  key: const Key('exerciseWeightField'),
-                                  controller: _weightController,
-                                  validator: (value) {
-                                    if (value == null || !_isNumeric(value)) {
-                                      return 'Please enter a number';
-                                    }
-                                    return null;
-                                  },
-                                  textAlign: TextAlign.center,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Weight',
-                                    errorMaxLines: 3,
+                                  const SizedBox(
+                                    width: 8,
                                   ),
-                                ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      key: const Key('exerciseRepsField'),
+                                      controller: _repsController,
+                                      validator: (value) {
+                                        if (value == null ||
+                                            !_isNumeric(value)) {
+                                          return 'Please enter a number';
+                                        }
+                                        return null;
+                                      },
+                                      textAlign: TextAlign.center,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Reps',
+                                        errorMaxLines: 3,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      key: const Key('exerciseWeightField'),
+                                      controller: _weightController,
+                                      validator: (value) {
+                                        if (value == null ||
+                                            !_isNumeric(value)) {
+                                          return 'Please enter a number';
+                                        }
+                                        return null;
+                                      },
+                                      textAlign: TextAlign.center,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Weight',
+                                        errorMaxLines: 3,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          key: const Key('cancelButton'),
-                          onPressed: () => {
-                            _clearTextFields(),
-                            Navigator.of(context).pop(),
-                          },
-                          child: const Text('Cancel'),
+                          actions: [
+                            TextButton(
+                              key: const Key('cancelButton'),
+                              onPressed: () => {
+                                _clearTextFields(),
+                                Navigator.of(context).pop(),
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            ElevatedButton(
+                              key: const Key('addButton'),
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  _addExercise();
+                                }
+                              },
+                              child: const Text('Add'),
+                            ),
+                          ],
                         ),
-                        ElevatedButton(
-                          key: const Key('addButton'),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _addExercise();
-                            }
-                          },
-                          child: const Text('Add'),
-                        ),
-                      ],
-                    ),
-                  );
-                }));
-          },
-          child: const Text('Add Exercise'),
-        ),
-      ],
-    );
+                      );
+                    }));
+              },
+              child: const Text('Add Exercise'),
+            ),
+          ),
+        ]);
   }
 }

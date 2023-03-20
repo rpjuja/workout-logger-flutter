@@ -5,9 +5,7 @@ import 'package:workout_logger_app/profile_widgets/profile_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import 'auth_widgets/auth_page.dart';
 import 'auth_widgets/auth_service.dart';
-import 'home_page.dart';
 
 FirebaseDatabase database = FirebaseDatabase.instance;
 
@@ -46,44 +44,52 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Workout logger',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
-              .copyWith(secondary: Colors.deepPurple[300]),
-          textTheme: const TextTheme(
-            titleLarge: TextStyle(fontSize: 26.0),
-            bodyLarge: TextStyle(fontSize: 20.0),
-            bodyMedium: TextStyle(fontSize: 18.0),
-            labelLarge: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
+    return GestureDetector(
+      // Dismiss keyboard when user taps outside of a text field
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: MaterialApp(
+          title: 'Workout logger',
+          theme: ThemeData(
+            colorScheme:
+                ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
+                    .copyWith(secondary: Colors.deepPurple[300]),
+            textTheme: const TextTheme(
+              titleLarge: TextStyle(fontSize: 26.0),
+              bodyLarge: TextStyle(fontSize: 20.0),
+              bodyMedium: TextStyle(fontSize: 18.0),
+              labelLarge: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
+            ),
+            dividerColor: Colors.deepPurple[200],
           ),
-          dividerColor: Colors.deepPurple[200],
-        ),
-        debugShowCheckedModeBanner: false,
-        // Show the app once firebase has finished initializing
-        home: FutureBuilder(
-            future: _fbApp,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                // ignore: avoid_print
-                print('You have an error! ${snapshot.error.toString()}');
-                return const Text('Something went wrong');
-              } else if (snapshot.hasData) {
-                setPersistence();
-                return _initialized
-                    // handelAuthState shows login page if user is not logged in, otherwise shows home page
-                    ? AuthService().handleAuthState()
-                    : const Center(child: CircularProgressIndicator());
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }),
-        routes: {
-          '/home': (context) => const HomePage(),
-          '/auth': (context) => const AuthPage(),
-          '/profile': (context) => const ProfilePage(),
-        });
+          debugShowCheckedModeBanner: false,
+          // If firebase is already initialized, show the app directly
+          home: _initialized
+              // handelAuthState shows login page if user is not logged in, otherwise shows home page
+              ? AuthService().handleAuthState()
+              // If firebase is not initialized, show the app once firebase has finished initializing
+              : FutureBuilder(
+                  future: _fbApp,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      // ignore: avoid_print
+                      print('You have an error! ${snapshot.error.toString()}');
+                      return const Text('Something went wrong');
+                    } else if (snapshot.hasData) {
+                      setPersistence();
+                      return _initialized
+                          ? AuthService().handleAuthState()
+                          : const Center(child: CircularProgressIndicator());
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  }),
+          routes: {
+            '/profile': (context) => const ProfilePage(),
+          }),
+    );
   }
 }

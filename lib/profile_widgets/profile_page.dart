@@ -86,12 +86,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           text: "Email: ",
                           style: TextStyle(
                             fontSize: 20,
+                            color: Colors.black,
                           ),
                         ),
                         TextSpan(
                           text: _user.email,
                           style: const TextStyle(
                             fontSize: 20,
+                            color: Colors.black,
                           ),
                         ),
                         // Add an edit email button if the user is signed in using email and password

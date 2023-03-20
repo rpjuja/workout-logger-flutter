@@ -37,8 +37,8 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
         _user = FirebaseAuth.instance.currentUser!;
       });
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(getAuthErrorMessage(e))));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
     }
   }
 
@@ -68,28 +68,24 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus() /* hide keyboard */,
-      child: Scaffold(
-          appBar: const TopBar(),
-          body: Column(
-            children: [
-              DateScroll(
-                  date: _selectedDate.value,
-                  dateAdded: _dateAdded,
-                  dateSubtracted: _dateSubtracted),
-              ExerciseList(
-                  userId: _user.uid, selectedDate: _selectedDate.value),
-              WorkoutNotes(
-                  userId: _user.uid, selectedDate: _selectedDate.value),
-              AddExercise(
-                userId: _user.uid,
-                selectedDate: _selectedDate.value,
-              ),
-            ],
+    return Scaffold(
+      appBar: const TopBar(),
+      body: Column(
+        children: [
+          DateScroll(
+              date: _selectedDate.value,
+              dateAdded: _dateAdded,
+              dateSubtracted: _dateSubtracted),
+          ExerciseList(userId: _user.uid, selectedDate: _selectedDate.value),
+          WorkoutNotes(userId: _user.uid, selectedDate: _selectedDate.value),
+          AddExercise(
+            userId: _user.uid,
+            selectedDate: _selectedDate.value,
           ),
-          bottomNavigationBar:
-              NavBar(date: _selectedDate.value, dateChanged: _dateChanged)),
+        ],
+      ),
+      bottomNavigationBar:
+          NavBar(date: _selectedDate.value, dateChanged: _dateChanged),
     );
   }
 }

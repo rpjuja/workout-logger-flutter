@@ -19,6 +19,13 @@ class DateScroll extends StatefulWidget {
 }
 
 class _DateScrollState extends State<DateScroll> {
+  int _calculateDifference(DateTime date) {
+    DateTime now = DateTime.now();
+    return DateTime(date.year, date.month, date.day)
+        .difference(DateTime(now.year, now.month, now.day))
+        .inDays;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,11 +44,11 @@ class _DateScrollState extends State<DateScroll> {
             child: const Icon(Icons.arrow_back),
           ),
           // Terinary operator to display "Today", "Yesterday", "Tomorrow" or the date
-          widget.date == null || widget.date?.day == DateTime.now().day
+          widget.date == null || _calculateDifference(widget.date!) == 0
               ? const Text("Today")
-              : widget.date?.day == DateTime.now().day - 1
+              : _calculateDifference(widget.date!) == -1
                   ? const Text("Yesterday")
-                  : widget.date?.day == DateTime.now().day + 1
+                  : _calculateDifference(widget.date!) == 1
                       ? const Text("Tomorrow")
                       : Text(DateFormat('d.M.yyyy').format(widget.date!)),
           ElevatedButton(

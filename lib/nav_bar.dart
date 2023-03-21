@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class NavBar extends StatefulWidget {
   final Function(DateTime) dateChanged;
+  final Function(bool) pageChanged;
 
-  const NavBar({Key? key, this.date, required this.dateChanged})
+  const NavBar(
+      {Key? key,
+      this.date,
+      required this.dateChanged,
+      required this.pageChanged})
       : super(key: key);
 
   final DateTime? date;
@@ -84,9 +89,13 @@ class _NavBarState extends State<NavBar> with RestorationMixin {
           _navBarIndex = index;
         });
         if (index == 0) {
-          Navigator.popUntil(context, ModalRoute.withName('/'));
+          setState(() {
+            widget.pageChanged(true);
+          });
         } else if (index == 1) {
-          // Navigator.pushNamed(context, '/progression');
+          setState(() {
+            widget.pageChanged(false);
+          });
         } else if (index == 2) {
           _restorableDatePickerRouteFuture.present();
         }

@@ -33,11 +33,13 @@ class _ExerciseListState extends State<ExerciseList> {
   late StreamSubscription<DatabaseEvent> _workoutSubscription;
 
   final List<ExerciseEntry> _exerciseList = <ExerciseEntry>[];
+  bool _exercisesFetched = false;
 
   @override
   void initState() {
     super.initState();
-    // When testing, the widget will receive a testDatabaseReference, otherwise use the real database
+    // When testing, the widget will receive a testDatabaseReference,
+    // otherwise use the real database
     _workoutRef = widget.testDatabaseReference ??
         FirebaseDatabase.instance.ref("exercises");
     _getExercisesAndListen();
@@ -74,6 +76,9 @@ class _ExerciseListState extends State<ExerciseList> {
             _exerciseList.clear();
           });
         }
+        setState(() {
+          _exercisesFetched = true;
+        });
       },
       onError: (Object o) {
         final e = o as FirebaseException;
@@ -104,68 +109,68 @@ class _ExerciseListState extends State<ExerciseList> {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      fit: FlexFit.loose,
-      child: _exerciseList.isNotEmpty
-          ? ListView.builder(
-              itemCount: _exerciseList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Dismissible(
-                    key: Key(_exerciseList[index].id),
-                    direction: DismissDirection.horizontal,
-                    dismissThresholds: const <DismissDirection, double>{
-                      DismissDirection.endToStart: 0.5,
-                    },
-                    background: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.deepPurple,
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(left: 10.0),
-                      margin: EdgeInsets.fromLTRB(
-                          MediaQuery.of(context).size.width * 0.1,
-                          0,
-                          MediaQuery.of(context).size.width * 0.1,
-                          10),
-                      child: const Icon(Icons.edit),
-                    ),
-                    secondaryBackground: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.deepPurple,
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 10.0),
-                      margin: EdgeInsets.fromLTRB(
-                          MediaQuery.of(context).size.width * 0.1,
-                          0,
-                          MediaQuery.of(context).size.width * 0.1,
-                          10),
-                      child: const Icon(Icons.delete),
-                    ),
-                    // Ask user for confirmation before deleting
-                    confirmDismiss: (direction) async {
-                      return await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return direction == DismissDirection.endToStart
-                                ? DeleteExercise(
-                                    userId: widget.userId,
-                                    selectedDate: widget.selectedDate,
-                                    exerciseId: _exerciseList[index].id,
-                                    exerciseName: _exerciseList[index].name,
-                                  )
-                                : ModifyExercise(
-                                    userId: widget.userId,
-                                    selectedDate: widget.selectedDate,
-                                    exercise: _exerciseList[index]);
-                          });
-                    },
-                    child: _exerciseList[index].build(context));
-              })
-          : CopyWorkout(
-              databaseReference: _workoutRef,
-              userId: widget.userId,
-              selectedDate: widget.selectedDate),
-    );
+    return Expanded(
+        child: _exercisesFetched && _exerciseList.isNotEmpty
+            ? ListView.builder(
+                itemCount: _exerciseList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Dismissible(
+                      key: Key(_exerciseList[index].id),
+                      direction: DismissDirection.horizontal,
+                      dismissThresholds: const <DismissDirection, double>{
+                        DismissDirection.endToStart: 0.5,
+                      },
+                      background: Container(
+                        decoration: const BoxDecoration(
+                            color: Colors.deepPurple,
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(left: 10.0),
+                        margin: EdgeInsets.fromLTRB(
+                            MediaQuery.of(context).size.width * 0.1,
+                            0,
+                            MediaQuery.of(context).size.width * 0.1,
+                            10),
+                        child: const Icon(Icons.edit),
+                      ),
+                      secondaryBackground: Container(
+                        decoration: const BoxDecoration(
+                            color: Colors.deepPurple,
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 10.0),
+                        margin: EdgeInsets.fromLTRB(
+                            MediaQuery.of(context).size.width * 0.1,
+                            0,
+                            MediaQuery.of(context).size.width * 0.1,
+                            10),
+                        child: const Icon(Icons.delete),
+                      ),
+                      // Ask user for confirmation before deleting
+                      confirmDismiss: (direction) async {
+                        return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return direction == DismissDirection.endToStart
+                                  ? DeleteExercise(
+                                      userId: widget.userId,
+                                      selectedDate: widget.selectedDate,
+                                      exerciseId: _exerciseList[index].id,
+                                      exerciseName: _exerciseList[index].name,
+                                    )
+                                  : ModifyExercise(
+                                      userId: widget.userId,
+                                      selectedDate: widget.selectedDate,
+                                      exercise: _exerciseList[index]);
+                            });
+                      },
+                      child: _exerciseList[index].build(context));
+                })
+            : _exercisesFetched
+                ? CopyWorkout(
+                    databaseReference: _workoutRef,
+                    userId: widget.userId,
+                    selectedDate: widget.selectedDate)
+                : const Center(child: CircularProgressIndicator()));
   }
 }

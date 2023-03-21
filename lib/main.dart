@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
               bodyLarge: TextStyle(fontSize: 20.0),
               bodyMedium: TextStyle(fontSize: 18.0),
               labelLarge: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
-            ),
+            ), 
             dividerColor: Colors.deepPurple[200],
           ),
           debugShowCheckedModeBanner: false,

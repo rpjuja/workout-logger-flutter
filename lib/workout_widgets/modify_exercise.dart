@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../error_messages.dart';
+import '../muscle_group.dart';
 import 'exercise_entry.dart';
 
 class ModifyExercise extends StatefulWidget {
@@ -30,6 +31,8 @@ class _ModifyExerciseState extends State<ModifyExercise> {
   final _setsController = TextEditingController();
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
+  MuscleGroup _selectedPrimaryMuscleGroup = MuscleGroup.none;
+  MuscleGroup _selectedSecondaryMuscleGroup = MuscleGroup.none;
   final _formKey = GlobalKey<FormState>();
 
   bool _isNumeric(string) => num.tryParse(string) != null;
@@ -41,6 +44,10 @@ class _ModifyExerciseState extends State<ModifyExercise> {
     _setsController.text = widget.exercise.sets;
     _repsController.text = widget.exercise.reps;
     _weightController.text = widget.exercise.weight;
+    _selectedPrimaryMuscleGroup =
+        widget.exercise.primaryMuscleGroup ?? MuscleGroup.none;
+    _selectedSecondaryMuscleGroup =
+        widget.exercise.secondaryMuscleGroup ?? MuscleGroup.none;
   }
 
   @override
@@ -152,8 +159,78 @@ class _ModifyExerciseState extends State<ModifyExercise> {
               ),
             ),
           ]),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text("Primary muscle group"),
+          const SizedBox(height: 10),
+          DropdownButtonFormField<MuscleGroup>(
+            isDense: true,
+            focusColor: Colors.white,
+            value: _selectedPrimaryMuscleGroup,
+            items: MuscleGroup.values
+                .map((muscleGroup) => DropdownMenuItem<MuscleGroup>(
+                      value: muscleGroup,
+                      child: muscleGroup == MuscleGroup.none
+                          ? const Text("Not selected")
+                          : Text(muscleGroup.name.toString().capitalize()),
+                    ))
+                .toList(),
+            onChanged: (value) => {
+              setState(() {
+                _selectedPrimaryMuscleGroup = value!;
+              })
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text("Secondary muscle group"),
+          const SizedBox(height: 10),
+          DropdownButtonFormField<MuscleGroup>(
+            isDense: true,
+            focusColor: Colors.white,
+            value: _selectedSecondaryMuscleGroup,
+            items: MuscleGroup.values
+                .map((muscleGroup) => DropdownMenuItem<MuscleGroup>(
+                      value: muscleGroup,
+                      child: muscleGroup == MuscleGroup.none
+                          ? const Text("Not selected")
+                          : Text(muscleGroup.name.toString().capitalize()),
+                    ))
+                .toList(),
+            onChanged: (value) => {
+              setState(() {
+                _selectedSecondaryMuscleGroup = value!;
+              })
+            },
+            validator: (value) {
+              if (value != MuscleGroup.none &&
+                  value == _selectedPrimaryMuscleGroup) {
+                return "Primary and secondary muscle groups can't be the same";
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              errorMaxLines: 2,
+            ),
+          ),
         ]),
         actions: [
+          Tooltip(
+            message:
+                'Primary muscle group is the muscle group that is the main focus of the exercise. Secondary muscle group is a muscle group that is also worked out by the exercise. Both of these fields are optional, but recommended for keeping track of total sets done.',
+            preferBelow: false,
+            margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.1,
+                0, MediaQuery.of(context).size.width * 0.1, 0),
+            child: IconButton(
+              onPressed: () => {},
+              icon: const Icon(Icons.info),
+            ),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.2,
+          ),
           TextButton(
             onPressed: () => {
               Navigator.of(context).pop(),

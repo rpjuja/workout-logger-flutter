@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:workout_logger_app/muscle_group.dart';
 import 'package:workout_logger_app/workout_widgets/copy_workout.dart';
 
 import '../error_messages.dart';
@@ -96,12 +97,21 @@ class _ExerciseListState extends State<ExerciseList> {
     _exerciseList.clear();
     setState(() {
       exercises.forEach((key, value) {
+        MuscleGroup primaryMuscleGroup = MuscleGroup.values.firstWhere(
+            (element) => element.name.toString() == value['primaryMuscleGroup'],
+            orElse: () => MuscleGroup.none);
+        MuscleGroup secondaryMuscleGroup = MuscleGroup.values.firstWhere(
+            (element) =>
+                element.name.toString() == value['secondaryMuscleGroup'],
+            orElse: () => MuscleGroup.none);
         _exerciseList.add(ExerciseEntry(
           id: key,
           name: value['name'],
           sets: value['sets'],
           reps: value['reps'],
           weight: value['weight'],
+          primaryMuscleGroup: primaryMuscleGroup,
+          secondaryMuscleGroup: secondaryMuscleGroup,
         ));
       });
     });

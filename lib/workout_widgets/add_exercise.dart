@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:workout_logger_app/muscle_group.dart';
 
 import '../error_messages.dart';
 import '../styles.dart';
@@ -29,6 +30,8 @@ class _AddExerciseState extends State<AddExercise> {
   final _setsController = TextEditingController();
   final _repsController = TextEditingController();
   final _weightController = TextEditingController();
+  MuscleGroup _selectedPrimaryMuscleGroup = MuscleGroup.none;
+  MuscleGroup _selectedSecondaryMuscleGroup = MuscleGroup.none;
   final _formKey = GlobalKey<FormState>();
 
   bool _isNumeric(string) => num.tryParse(string) != null;
@@ -55,6 +58,8 @@ class _AddExerciseState extends State<AddExercise> {
     _setsController.clear();
     _repsController.clear();
     _weightController.clear();
+    _selectedPrimaryMuscleGroup = MuscleGroup.none;
+    _selectedSecondaryMuscleGroup = MuscleGroup.none;
   }
 
   Future<void> _addExercise() async {
@@ -70,6 +75,9 @@ class _AddExerciseState extends State<AddExercise> {
             'sets': _setsController.text,
             'reps': _repsController.text,
             'weight': _weightController.text,
+            'primaryMuscleGroup': _selectedPrimaryMuscleGroup.name.toString(),
+            'secondaryMuscleGroup':
+                _selectedSecondaryMuscleGroup.name.toString(),
           })
           .then((value) => Navigator.of(context).pop(true))
           .then((value) => ScaffoldMessenger.of(context).showSnackBar(
@@ -99,7 +107,7 @@ class _AddExerciseState extends State<AddExercise> {
                       return Form(
                         key: _formKey,
                         child: AlertDialog(
-                          title: const Text('Add Exercise'),
+                          title: const Text('Add exercise'),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -113,7 +121,7 @@ class _AddExerciseState extends State<AddExercise> {
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  hintText: 'Exercise Name',
+                                  hintText: 'Exercise name',
                                   suffixIcon: IconButton(
                                     onPressed: _nameController.clear,
                                     icon: const Icon(Icons.clear),
@@ -186,9 +194,88 @@ class _AddExerciseState extends State<AddExercise> {
                                   ),
                                 ],
                               ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text("Primary muscle group"),
+                              const SizedBox(height: 10),
+                              DropdownButtonFormField<MuscleGroup>(
+                                isDense: true,
+                                focusColor: Colors.white,
+                                value: _selectedPrimaryMuscleGroup,
+                                items: MuscleGroup.values
+                                    .map((muscleGroup) =>
+                                        DropdownMenuItem<MuscleGroup>(
+                                          value: muscleGroup,
+                                          child: muscleGroup == MuscleGroup.none
+                                              ? const Text("Not selected")
+                                              : Text(muscleGroup.name
+                                                  .toString()
+                                                  .capitalize()),
+                                        ))
+                                    .toList(),
+                                onChanged: (value) => {
+                                  setState(() {
+                                    _selectedPrimaryMuscleGroup = value!;
+                                  })
+                                },
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text("Secondary muscle group"),
+                              const SizedBox(height: 10),
+                              DropdownButtonFormField<MuscleGroup>(
+                                isDense: true,
+                                focusColor: Colors.white,
+                                value: _selectedSecondaryMuscleGroup,
+                                items: MuscleGroup.values
+                                    .map((muscleGroup) =>
+                                        DropdownMenuItem<MuscleGroup>(
+                                          value: muscleGroup,
+                                          child: muscleGroup == MuscleGroup.none
+                                              ? const Text("Not selected")
+                                              : Text(muscleGroup.name
+                                                  .toString()
+                                                  .capitalize()),
+                                        ))
+                                    .toList(),
+                                onChanged: (value) => {
+                                  setState(() {
+                                    _selectedSecondaryMuscleGroup = value!;
+                                  })
+                                },
+                                validator: (value) {
+                                  if (value != MuscleGroup.none &&
+                                      value == _selectedPrimaryMuscleGroup) {
+                                    return "Primary and secondary muscle groups can't be the same";
+                                  }
+                                  return null;
+                                },
+                                decoration: const InputDecoration(
+                                  errorMaxLines: 2,
+                                ),
+                              ),
                             ],
                           ),
                           actions: [
+                            Tooltip(
+                              message:
+                                  'Primary muscle group is the muscle group that is the main focus of the exercise. Secondary muscle group is a muscle group that is also worked out by the exercise. Both of these fields are optional, but recommended for keeping track of total sets done.',
+                              preferBelow: false,
+                              margin: EdgeInsets.fromLTRB(
+                                  MediaQuery.of(context).size.width * 0.1,
+                                  0,
+                                  MediaQuery.of(context).size.width * 0.1,
+                                  0),
+                              child: IconButton(
+                                onPressed: () => {},
+                                icon: const Icon(Icons.info),
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.2,
+                            ),
                             TextButton(
                               key: const Key('cancelButton'),
                               onPressed: () => {
@@ -211,7 +298,7 @@ class _AddExerciseState extends State<AddExercise> {
                       );
                     }));
               },
-              child: const Text('Add Exercise'),
+              child: const Text('Add exercise'),
             ),
           ),
         ]);

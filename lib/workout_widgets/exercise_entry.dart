@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_logger_app/muscle_group.dart';
 
 class ExerciseEntry extends StatelessWidget {
   final String id;
@@ -6,6 +7,8 @@ class ExerciseEntry extends StatelessWidget {
   final String sets;
   final String reps;
   final String weight;
+  final MuscleGroup primaryMuscleGroup;
+  final MuscleGroup secondaryMuscleGroup;
 
   const ExerciseEntry(
       {Key? key,
@@ -13,7 +16,9 @@ class ExerciseEntry extends StatelessWidget {
       required this.name,
       required this.sets,
       required this.reps,
-      required this.weight})
+      required this.weight,
+      required this.primaryMuscleGroup,
+      required this.secondaryMuscleGroup})
       : super(key: key);
 
   @override

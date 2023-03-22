@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:workout_logger_app/progression_widgets/progression_chart.dart';
 
 import 'month_scroll.dart';
 import 'progression_chart.dart';

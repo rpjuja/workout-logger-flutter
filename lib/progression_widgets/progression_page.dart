@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:workout_logger_app/progression_widgets/progression_chart.dart';
 
 import 'month_scroll.dart';
+import 'progression_chart.dart';
 
 class ProgressionPage extends StatefulWidget {
   const ProgressionPage({
@@ -40,7 +42,8 @@ class _ProgressionPageState extends State<ProgressionPage> {
     return Column(
       children: [
         DateScroll(
-            date: _date, nextMonth: _nextMonth, previousMonth: _previousMonth)
+            date: _date, nextMonth: _nextMonth, previousMonth: _previousMonth),
+        const ProgressionChart()
       ],
     );
   }

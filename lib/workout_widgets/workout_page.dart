@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'date_scroll.dart';
 import '../error_messages.dart';
-import 'add_exercise.dart';
 import 'exercise_list.dart';
 import 'workout_notes.dart';
 
@@ -54,7 +53,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
             dateSubtracted: widget.dateSubtracted),
         ExerciseList(selectedDate: widget.selectedDate, userId: _user.uid),
         WorkoutNotes(selectedDate: widget.selectedDate, userId: _user.uid),
-        AddExercise(selectedDate: widget.selectedDate, userId: _user.uid),
       ],
     );
   }

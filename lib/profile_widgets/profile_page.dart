@@ -79,41 +79,45 @@ class _ProfilePageState extends State<ProfilePage> {
                     stopEditingEmail: _stopEditingEmail,
                     getUserData: _getUserData,
                     user: _user)
-                : RichText(
-                    text: TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: "Email: ",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
+                : Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.1),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          const TextSpan(
+                            text: "Email: ",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                        TextSpan(
-                          text: _user.email,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
+                          TextSpan(
+                            text: _user.email,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                        // Add an edit email button if the user is signed in using email and password
-                        _user.providerData[0].providerId == 'password'
-                            ? WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(5, 0, 0, 3),
-                                  child: IconButton(
-                                    icon: const Icon(Icons.edit),
-                                    hoverColor: Colors.transparent,
-                                    onPressed: () => setState(() {
-                                      _editingEmail = true;
-                                    }),
+                          // Add an edit email button if the user is signed in using email and password
+                          _user.providerData[0].providerId == 'password'
+                              ? WidgetSpan(
+                                  alignment: PlaceholderAlignment.middle,
+                                  child: Container(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(5, 0, 0, 3),
+                                    child: IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      hoverColor: Colors.transparent,
+                                      onPressed: () => setState(() {
+                                        _editingEmail = true;
+                                      }),
+                                    ),
                                   ),
-                                ),
-                              )
-                            : const WidgetSpan(child: SizedBox.shrink()),
-                      ],
+                                )
+                              : const WidgetSpan(child: SizedBox.shrink()),
+                        ],
+                      ),
                     ),
                   ),
             const SizedBox(height: 10),

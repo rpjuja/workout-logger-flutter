@@ -42,7 +42,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
     try {
       await widget.user.updateEmail(_emailController.text);
       widget.stopEditingEmail();
-      widget.getUserData().then(() => ScaffoldMessenger.of(context)
+      widget.getUserData().then((value) => ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Email updated"))));
     } on FirebaseAuthException catch (e) {
       // If the user's credential is too old, they need to reauthenticate.

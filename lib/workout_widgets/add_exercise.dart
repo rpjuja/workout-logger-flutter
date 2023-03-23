@@ -65,23 +65,20 @@ class _AddExerciseState extends State<AddExercise> {
   Widget build(BuildContext context) {
     return ButtonBar(
         alignment: MainAxisAlignment.center,
-        buttonPadding: const EdgeInsets.all(30.0),
+        buttonPadding: const EdgeInsets.all(20.0),
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: ElevatedButton(
-              key: const Key('addExerciseButton'),
-              style: ButtonStyles.shadowPadding,
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: ((context) {
-                      return ExerciseForm(
-                          parentName: "add", onConfirm: _addExercise);
-                    }));
-              },
-              child: const Text('Add exercise'),
-            ),
+          ElevatedButton(
+            key: const Key('addExerciseButton'),
+            style: ButtonStyles.shadowPadding,
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: ((context) {
+                    return ExerciseForm(
+                        parentName: "add", onConfirm: _addExercise);
+                  }));
+            },
+            child: const Text('Add exercise'),
           ),
         ]);
   }

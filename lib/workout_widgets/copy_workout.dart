@@ -94,13 +94,15 @@ class _CopyWorkoutState extends State<CopyWorkout> with RestorationMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.topCenter,
-      margin: const EdgeInsets.only(top: 30),
-      child: ElevatedButton(
-          onPressed: () => _restorableDatePickerRouteFuture.present(),
-          style: ButtonStyles.shadowPadding,
-          child: const Text('Copy workout from previous date')),
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      buttonPadding: const EdgeInsets.all(20),
+      children: [
+        ElevatedButton(
+            onPressed: () => _restorableDatePickerRouteFuture.present(),
+            style: ButtonStyles.shadowPadding,
+            child: const Text('Copy workout from previous date')),
+      ],
     );
   }
 }

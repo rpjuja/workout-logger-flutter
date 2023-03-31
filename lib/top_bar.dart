@@ -15,16 +15,6 @@ class TopBar extends StatelessWidget with PreferredSizeWidget {
       shadowColor: Colors.deepPurple[300],
       title: const Text("Workout Tracker"),
       actions: [
-        // Show profile button if not on profile page
-        ModalRoute.of(context)?.settings.name != '/profile'
-            ? IconButton(
-                iconSize: 30,
-                onPressed: () => Navigator.pushNamed(context, '/profile'),
-                icon: const Icon(Icons.person))
-            : const SizedBox.shrink(),
-        const SizedBox(
-          width: 10,
-        ),
         // Show logout button if on profile page
         ModalRoute.of(context)?.settings.name == '/profile'
             ? IconButton(

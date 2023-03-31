@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../styles.dart';
 
-class DateScroll extends StatefulWidget {
+class MonthScroll extends StatefulWidget {
   final Function() nextMonth;
   final Function() previousMonth;
-  const DateScroll(
+  const MonthScroll(
       {Key? key,
       required this.date,
       required this.nextMonth,
@@ -15,10 +15,10 @@ class DateScroll extends StatefulWidget {
   final DateTime date;
 
   @override
-  State<DateScroll> createState() => _DateScrollState();
+  State<MonthScroll> createState() => _MonthScrollState();
 }
 
-class _DateScrollState extends State<DateScroll> {
+class _MonthScrollState extends State<MonthScroll> {
   @override
   void initState() {
     super.initState();

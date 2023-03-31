@@ -37,10 +37,11 @@ class _ResetPasswordState extends State<ResetPassword> {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             alignment: Alignment.centerLeft,
-            margin: const EdgeInsets.only(left: 30),
+            margin: const EdgeInsets.only(left: 20),
             height: MediaQuery.of(context).size.height * 0.1,
             child: IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -58,7 +59,9 @@ class _ResetPasswordState extends State<ResetPassword> {
           Container(
             margin: const EdgeInsets.fromLTRB(30, 0, 30, 30),
             child: const Text(
-                'Enter your email and we will send you a password reset link'),
+              'Enter your email and we will send you a password reset link',
+              textAlign: TextAlign.center,
+            ),
           ),
           Form(
             key: _formKey,

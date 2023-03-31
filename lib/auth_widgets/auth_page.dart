@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:workout_logger_app/styles.dart';
 import 'package:workout_logger_app/auth_widgets/reset_password.dart';
 import 'package:workout_logger_app/custom_icons.dart';
+import 'package:workout_logger_app/top_bar.dart';
 
 import 'auth_service.dart';
 
@@ -44,11 +45,7 @@ class _AuthPageState extends State<AuthPage> {
     return Scaffold(
       resizeToAvoidBottomInset:
           false, // Prevents keyboard from resizing and overflowing the screen
-      appBar: AppBar(
-        elevation: 10,
-        shadowColor: Colors.deepPurple[300],
-        title: const Text('Workout Logger'),
-      ),
+      appBar: const TopBar(),
       body: Center(
         child: _resetPasswordMode
             ? ResetPassword(
@@ -59,7 +56,7 @@ class _AuthPageState extends State<AuthPage> {
                 children: [
                   Container(
                       alignment: Alignment.centerLeft,
-                      margin: const EdgeInsets.only(left: 30),
+                      margin: const EdgeInsets.only(left: 20),
                       height: MediaQuery.of(context).size.height * 0.1,
                       child: !_loginMode
                           ? IconButton(
@@ -122,7 +119,7 @@ class _AuthPageState extends State<AuthPage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.6,
                           // Smaller bottom margin for forgot password button below
-                          margin: const EdgeInsets.only(bottom: 10),
+                          margin: const EdgeInsets.only(bottom: 0),
                           child: TextFormField(
                             controller: _passwordController,
                             // Validate password on sign up only
@@ -146,7 +143,7 @@ class _AuthPageState extends State<AuthPage> {
                             ? Container(
                                 width: MediaQuery.of(context).size.width * 0.6,
                                 // Add top margin to separate from other password field
-                                margin: const EdgeInsets.fromLTRB(0, 20, 0, 30),
+                                margin: const EdgeInsets.fromLTRB(0, 30, 0, 30),
                                 child: TextFormField(
                                   controller: _confirmPasswordController,
                                   validator: (value) {
@@ -174,7 +171,7 @@ class _AuthPageState extends State<AuthPage> {
                       ? Container(
                           alignment: Alignment.centerRight,
                           margin: EdgeInsets.fromLTRB(0, 0,
-                              MediaQuery.of(context).size.width * 0.2, 30),
+                              MediaQuery.of(context).size.width * 0.2, 20),
                           child: TextButton(
                               style: ButtonStyle(
                                   foregroundColor: MaterialStateProperty.all(
@@ -187,7 +184,6 @@ class _AuthPageState extends State<AuthPage> {
                               child: const Text('Forgot password?')))
                       : const SizedBox.shrink(),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 30),
                     child: _loginMode
                         ? Column(
                             children: [

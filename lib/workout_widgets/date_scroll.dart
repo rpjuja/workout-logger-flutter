@@ -43,7 +43,7 @@ class _DateScrollState extends State<DateScroll> {
             },
             child: const Icon(Icons.arrow_back),
           ),
-          // Terinary operator to display "Today", "Yesterday", "Tomorrow" or the date
+          // Conditionally render either "Today", "Yesterday", "Tomorrow" or the date
           widget.date == null || _calculateDifference(widget.date!) == 0
               ? const Text("Today")
               : _calculateDifference(widget.date!) == -1

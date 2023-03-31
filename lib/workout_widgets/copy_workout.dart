@@ -60,6 +60,7 @@ class _CopyWorkoutState extends State<CopyWorkout> with RestorationMixin {
         return DatePickerDialog(
           restorationId: 'date_picker_dialog_for_copy_workout',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
+          helpText: 'SELECT DATE TO COPY FROM',
           initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
           firstDate: DateTime(2022),
           lastDate: DateTime(2030),

@@ -104,7 +104,6 @@ class _ChangePasswordState extends State<ChangePassword> {
           child: const Text("Cancel"),
         ),
         ElevatedButton(
-            style: ButtonStyles.shadowPadding,
             onPressed: () => {
                   if (_formKey.currentState!.validate())
                     AuthService().changePassword(

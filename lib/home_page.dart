@@ -53,6 +53,8 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset:
+          true, // Prevents keyboard from resizing and overflowing the screen
       appBar: const TopBar(),
       body: _showWorkoutPage
           ? WorkoutPage(

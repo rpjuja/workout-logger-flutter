@@ -57,9 +57,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
           'Are you sure you wish to delete your account? Everything will be lost.'),
       actions: <Widget>[
         ElevatedButton(
-            style: ButtonStyles.shadowPadding,
-            onPressed: () => _deleteAccount(),
-            child: const Text("Delete")),
+            onPressed: () => _deleteAccount(), child: const Text("Delete")),
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: const Text("Cancel"),

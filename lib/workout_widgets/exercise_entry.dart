@@ -30,7 +30,7 @@ class ExerciseEntry extends StatelessWidget {
       shadowColor: Colors.deepPurple[300]?.withOpacity(0.5),
       child: Row(children: [
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.5,
+          width: MediaQuery.of(context).size.width * 0.4,
           child: Padding(
               padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
               child: Container(
@@ -44,12 +44,12 @@ class ExerciseEntry extends StatelessWidget {
           child: Text(sets),
         ),
         Container(
-          width: MediaQuery.of(context).size.width * 0.1,
+          width: MediaQuery.of(context).size.width * 0.15,
           alignment: Alignment.center,
           child: Text(reps),
         ),
         Container(
-          width: MediaQuery.of(context).size.width * 0.1,
+          width: MediaQuery.of(context).size.width * 0.15,
           alignment: Alignment.center,
           child: Text(weight),
         ),

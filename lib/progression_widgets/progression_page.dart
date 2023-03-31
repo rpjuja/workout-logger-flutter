@@ -40,7 +40,7 @@ class _ProgressionPageState extends State<ProgressionPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        DateScroll(
+        MonthScroll(
             date: _date, nextMonth: _nextMonth, previousMonth: _previousMonth),
         const ProgressionChart()
       ],

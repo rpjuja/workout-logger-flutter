@@ -98,9 +98,9 @@ void main() {
           find.widgetWithText(
               AlertDialog, 'Are you sure you wish to delete Bench Press?'),
           findsOneWidget);
-      expect(find.text('DELETE'), findsOneWidget);
+      expect(find.text('Delete'), findsOneWidget);
       expect(find.text('Cancel'), findsOneWidget);
-      await widgetTester.tap(find.text('DELETE'));
+      await widgetTester.tap(find.text('Delete'));
       await widgetTester.pump();
 
       // Verify that the exercise has been deleted
@@ -126,11 +126,11 @@ void main() {
       expect(find.byKey(const Key('exerciseSetsField')), findsOneWidget);
       expect(find.byKey(const Key('exerciseRepsField')), findsOneWidget);
       expect(find.byKey(const Key('exerciseWeightField')), findsOneWidget);
-      expect(find.byKey(const Key('addButton')), findsOneWidget);
+      expect(find.byKey(const Key('confirmButton')), findsOneWidget);
       expect(find.byKey(const Key('cancelButton')), findsOneWidget);
 
       // Tap the add button with no inputs and verify that the validator error messages are shown
-      await tester.tap(find.byKey(const Key('addButton')));
+      await tester.tap(find.byKey(const Key('confirmButton')));
       await tester.pump();
       expect(find.text('Please enter a name'), findsOneWidget);
       expect(find.text('Please enter a number'), findsNWidgets(3));
@@ -161,7 +161,7 @@ void main() {
       await tester.enterText(find.byKey(const Key('exerciseRepsField')), '5');
       await tester.enterText(
           find.byKey(const Key('exerciseWeightField')), '200');
-      await tester.tap(find.byKey(const Key("addButton")));
+      await tester.tap(find.byKey(const Key("confirmButton")));
       await tester.pump();
 
       // Verify that the dialog is closed

@@ -50,23 +50,24 @@ class _MyAppState extends State<MyApp> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: MaterialApp(
-          title: 'Workout logger',
+          title: 'Workout Tracker',
           theme: ThemeData(
             colorScheme:
                 ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
                     .copyWith(secondary: Colors.deepPurple[300]),
             textTheme: const TextTheme(
               titleLarge: TextStyle(fontSize: 26.0),
+              titleMedium: TextStyle(fontSize: 18.0),
               bodyLarge: TextStyle(fontSize: 20.0),
               bodyMedium: TextStyle(fontSize: 18.0),
-              labelLarge: TextStyle(fontSize: 16.0, letterSpacing: 0.25),
-            ), 
+              labelLarge: TextStyle(fontSize: 18.0, letterSpacing: 0.2),
+            ),
             dividerColor: Colors.deepPurple[200],
           ),
           debugShowCheckedModeBanner: false,
           // If firebase is already initialized, show the app directly
+          // handelAuthState shows login page if user is not logged in, otherwise shows home page
           home: _initialized
-              // handelAuthState shows login page if user is not logged in, otherwise shows home page
               ? AuthService().handleAuthState()
               // If firebase is not initialized, show the app once firebase has finished initializing
               : FutureBuilder(

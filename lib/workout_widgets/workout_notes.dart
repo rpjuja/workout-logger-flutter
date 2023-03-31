@@ -101,7 +101,9 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      // Move TextField up when keyboard is open
+      margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20),
       width: MediaQuery.of(context).size.width * 0.8,
       decoration: BoxDecoration(
         color: Colors.white,

@@ -136,20 +136,22 @@ class _ProfilePageState extends State<ProfilePage> {
                 ? const Text('Signed in with Google')
                 : const SizedBox.shrink(),
             const Spacer(),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              margin: const EdgeInsets.only(bottom: 30),
-              child: ElevatedButton(
-                  onPressed: () => {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ChangePassword(user: _user);
-                            })
-                      },
-                  style: ButtonStyles.shadowPadding,
-                  child: const Text('Change password')),
-            ),
+            _user.providerData[0].providerId == 'password'
+                ? Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    margin: const EdgeInsets.only(bottom: 30),
+                    child: ElevatedButton(
+                        onPressed: () => {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return ChangePassword(user: _user);
+                                  })
+                            },
+                        style: ButtonStyles.shadowPadding,
+                        child: const Text('Change password')),
+                  )
+                : const SizedBox.shrink(),
             Container(
               width: MediaQuery.of(context).size.width * 0.8,
               margin: const EdgeInsets.only(bottom: 30),

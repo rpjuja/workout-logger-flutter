@@ -73,8 +73,12 @@ class _NavBarState extends State<NavBar> with RestorationMixin {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.auto_graph),
+          icon: Icon(Icons.bar_chart),
           label: 'Progression',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_month),
@@ -82,6 +86,9 @@ class _NavBarState extends State<NavBar> with RestorationMixin {
         ),
       ],
       currentIndex: _navBarIndex,
+      showUnselectedLabels: true,
+      selectedLabelStyle: const TextStyle(fontSize: 16),
+      unselectedLabelStyle: const TextStyle(fontSize: 14),
       selectedItemColor: Colors.deepPurple,
       unselectedItemColor: Colors.deepPurple[300],
       onTap: (int index) {
@@ -97,6 +104,8 @@ class _NavBarState extends State<NavBar> with RestorationMixin {
             widget.pageChanged(false);
           });
         } else if (index == 2) {
+          Navigator.pushNamed(context, '/profile');
+        } else if (index == 3) {
           _restorableDatePickerRouteFuture.present();
         }
       },

@@ -14,10 +14,7 @@ import 'delete_exercise.dart';
 
 class ExerciseList extends StatefulWidget {
   const ExerciseList(
-      {Key? key,
-      this.testDatabaseReference,
-      required this.userId,
-      required this.selectedDate})
+      {Key? key, this.testDatabaseReference, required this.userId, required this.selectedDate})
       : super(key: key);
 
   final DatabaseReference? testDatabaseReference;
@@ -40,8 +37,7 @@ class _ExerciseListState extends State<ExerciseList> {
     super.initState();
     // When testing, the widget will receive a testDatabaseReference,
     // otherwise use the real database
-    _workoutRef = widget.testDatabaseReference ??
-        FirebaseDatabase.instance.ref("exercises");
+    _workoutRef = widget.testDatabaseReference ?? FirebaseDatabase.instance.ref("exercises");
     _getExercisesAndListen();
   }
 
@@ -68,14 +64,11 @@ class _ExerciseListState extends State<ExerciseList> {
         queryMonth = date.split("-")[1],
         queryDay = date.split("-")[2];
 
-    _workoutSubscription = _workoutRef
-        .child("${widget.userId}/$queryYear/$queryMonth/$queryDay")
-        .onValue
-        .listen(
+    _workoutSubscription =
+        _workoutRef.child("${widget.userId}/$queryYear/$queryMonth/$queryDay").onValue.listen(
       (event) {
         if (event.snapshot.exists) {
-          Map<String, dynamic> exercises =
-              Map<String, dynamic>.from(event.snapshot.value as Map);
+          Map<String, dynamic> exercises = Map<String, dynamic>.from(event.snapshot.value as Map);
           _printExercises(exercises);
         } else {
           setState(() {
@@ -91,9 +84,8 @@ class _ExerciseListState extends State<ExerciseList> {
         setState(() {
           _exerciseList.clear();
         });
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content:
-                Text('Error retrieving exercises: ${getErrorMessage(e)}}')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error retrieving exercises: ${getErrorMessage(e)}}')));
       },
     );
   }
@@ -106,8 +98,7 @@ class _ExerciseListState extends State<ExerciseList> {
             (element) => element.name.toString() == value['primaryMuscleGroup'],
             orElse: () => MuscleGroup.none);
         MuscleGroup secondaryMuscleGroup = MuscleGroup.values.firstWhere(
-            (element) =>
-                element.name.toString() == value['secondaryMuscleGroup'],
+            (element) => element.name.toString() == value['secondaryMuscleGroup'],
             orElse: () => MuscleGroup.none);
         _exerciseList.add(ExerciseEntry(
           id: key,
@@ -144,29 +135,21 @@ class _ExerciseListState extends State<ExerciseList> {
                           background: Container(
                             decoration: const BoxDecoration(
                                 color: Colors.deepPurple,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
+                                borderRadius: BorderRadius.all(Radius.circular(5))),
                             alignment: Alignment.centerLeft,
                             padding: const EdgeInsets.only(left: 10.0),
-                            margin: EdgeInsets.fromLTRB(
-                                MediaQuery.of(context).size.width * 0.1,
-                                0,
-                                MediaQuery.of(context).size.width * 0.1,
-                                10),
+                            margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.1, 0,
+                                MediaQuery.of(context).size.width * 0.1, 10),
                             child: const Icon(Icons.edit),
                           ),
                           secondaryBackground: Container(
                             decoration: const BoxDecoration(
                                 color: Colors.deepPurple,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
+                                borderRadius: BorderRadius.all(Radius.circular(5))),
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.only(right: 10.0),
-                            margin: EdgeInsets.fromLTRB(
-                                MediaQuery.of(context).size.width * 0.1,
-                                0,
-                                MediaQuery.of(context).size.width * 0.1,
-                                10),
+                            margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.1, 0,
+                                MediaQuery.of(context).size.width * 0.1, 10),
                             child: const Icon(Icons.delete),
                           ),
                           // Ask user for confirmation before deleting
@@ -174,14 +157,12 @@ class _ExerciseListState extends State<ExerciseList> {
                             return await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return direction ==
-                                          DismissDirection.endToStart
+                                  return direction == DismissDirection.endToStart
                                       ? DeleteExercise(
                                           userId: widget.userId,
                                           selectedDate: widget.selectedDate,
                                           exerciseId: _exerciseList[index].id,
-                                          exerciseName:
-                                              _exerciseList[index].name,
+                                          exerciseName: _exerciseList[index].name,
                                         )
                                       : ModifyExercise(
                                           userId: widget.userId,

@@ -7,8 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:workout_logger_app/error_messages.dart';
 
 class WorkoutNotes extends StatefulWidget {
-  const WorkoutNotes(
-      {Key? key, required this.userId, required this.selectedDate})
+  const WorkoutNotes({Key? key, required this.userId, required this.selectedDate})
       : super(key: key);
 
   final String userId;
@@ -22,8 +21,7 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   final TextEditingController _notesController = TextEditingController();
   late FocusNode _notesFocusNode;
 
-  final DatabaseReference _workoutRef =
-      FirebaseDatabase.instance.ref("/workouts/");
+  final DatabaseReference _workoutRef = FirebaseDatabase.instance.ref("/workouts/");
   late StreamSubscription<DatabaseEvent> _workoutSubscription;
 
   @override
@@ -55,12 +53,10 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   Future<void> _getNotesAndListen() async {
     final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
 
-    _workoutSubscription =
-        _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
+    _workoutSubscription = _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
       (event) {
         if (event.snapshot.exists) {
-          Map<String, dynamic> notes =
-              Map<String, dynamic>.from(event.snapshot.value as Map);
+          Map<String, dynamic> notes = Map<String, dynamic>.from(event.snapshot.value as Map);
           setState(() {
             _notesController.text = notes['notes'];
           });
@@ -72,8 +68,8 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
       },
       onError: (Object o) {
         final e = o as FirebaseException;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Error retrieving notes:/n${getErrorMessage(e)}')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error retrieving notes: ${getErrorMessage(e)}')));
       },
     );
   }
@@ -83,12 +79,11 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
     try {
       await _workoutRef
           .child("${widget.userId}/$queryDate")
-          .update({'notes': _notesController.text}).then((value) =>
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Notes saved'))));
+          .update({'notes': _notesController.text}).then((value) => ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Notes saved'))));
     } on FirebaseException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error saving notes:/n${getErrorMessage(e)}')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error saving notes: ${getErrorMessage(e)}')));
     }
   }
 
@@ -102,8 +97,7 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
   Widget build(BuildContext context) {
     return Container(
       // Move TextField up when keyboard is open
-      margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+      margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 20),
       width: MediaQuery.of(context).size.width * 0.8,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -133,9 +127,7 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
           labelText: _notesController.text.isEmpty ? 'Add notes' : 'Notes',
           labelStyle: TextStyle(
               fontSize: 20,
-              color: _notesFocusNode.hasFocus
-                  ? Colors.deepPurple
-                  : Colors.deepPurple[300]),
+              color: _notesFocusNode.hasFocus ? Colors.deepPurple : Colors.deepPurple[300]),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.deepPurple[300]!),
             borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -149,9 +141,7 @@ class _WorkoutNotesState extends State<WorkoutNotes> {
             iconSize: 30,
             splashRadius: 20,
             splashColor: Colors.deepPurple,
-            color: _notesFocusNode.hasFocus
-                ? Colors.deepPurple
-                : Colors.deepPurple[300],
+            color: _notesFocusNode.hasFocus ? Colors.deepPurple : Colors.deepPurple[300],
           ),
         ),
       ),

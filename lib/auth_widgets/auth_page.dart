@@ -20,8 +20,7 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _loginMode = true;
   bool _resetPasswordMode = false;
@@ -43,14 +42,11 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset:
-          false, // Prevents keyboard from resizing and overflowing the screen
+      resizeToAvoidBottomInset: false, // Prevents keyboard from resizing and overflowing the screen
       appBar: const TopBar(),
       body: Center(
         child: _resetPasswordMode
-            ? ResetPassword(
-                returnToLogin: _resetPasswordModeChange,
-                email: _emailController.text)
+            ? ResetPassword(returnToLogin: _resetPasswordModeChange, email: _emailController.text)
             : Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -77,23 +73,20 @@ class _AuthPageState extends State<AuthPage> {
                   _loginMode
                       ? Container(
                           margin: const EdgeInsets.only(bottom: 30),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text("Don't have an account?"),
-                                const SizedBox(width: 1),
-                                TextButton(
-                                    style: ButtonStyle(
-                                        foregroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.deepPurple[300])),
-                                    onPressed: () {
-                                      setState(() {
-                                        _loginMode = !_loginMode;
-                                      });
-                                    },
-                                    child: const Text('Sign up'))
-                              ]))
+                          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                            const Text("Don't have an account?"),
+                            const SizedBox(width: 1),
+                            TextButton(
+                                style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all(Colors.deepPurple[300])),
+                                onPressed: () {
+                                  setState(() {
+                                    _loginMode = !_loginMode;
+                                  });
+                                },
+                                child: const Text('Sign up'))
+                          ]))
                       : const SizedBox.shrink(),
                   Form(
                     key: _formKey,
@@ -159,8 +152,7 @@ class _AuthPageState extends State<AuthPage> {
                                   decoration: const InputDecoration(
                                       labelText: 'Confirm password',
                                       errorMaxLines: 2,
-                                      contentPadding:
-                                          EdgeInsets.only(left: 10)),
+                                      contentPadding: EdgeInsets.only(left: 10)),
                                 ),
                               )
                             : const SizedBox.shrink(),
@@ -170,12 +162,12 @@ class _AuthPageState extends State<AuthPage> {
                   _loginMode
                       ? Container(
                           alignment: Alignment.centerRight,
-                          margin: EdgeInsets.fromLTRB(0, 0,
-                              MediaQuery.of(context).size.width * 0.2, 20),
+                          margin: EdgeInsets.fromLTRB(
+                              0, 0, MediaQuery.of(context).size.width * 0.2, 20),
                           child: TextButton(
                               style: ButtonStyle(
-                                  foregroundColor: MaterialStateProperty.all(
-                                      Colors.deepPurple[300])),
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.deepPurple[300])),
                               onPressed: () {
                                 setState(() {
                                   _resetPasswordMode = !_resetPasswordMode;
@@ -191,9 +183,7 @@ class _AuthPageState extends State<AuthPage> {
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
                                     AuthService().signIn(
-                                        context,
-                                        _emailController.text,
-                                        _passwordController.text);
+                                        context, _emailController.text, _passwordController.text);
                                   }
                                 },
                                 style: ButtonStyles.shadowPadding,
@@ -204,12 +194,10 @@ class _AuthPageState extends State<AuthPage> {
                               ElevatedButton.icon(
                                 style: ButtonStyles.shadowPadding.copyWith(
                                     padding: MaterialStateProperty.all(
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 15))),
+                                        const EdgeInsets.symmetric(horizontal: 10, vertical: 15))),
                                 icon: const Icon(CustomIcons.google_1),
                                 label: const Text('Sign in with Google'),
-                                onPressed: () =>
-                                    AuthService().signInWithGoogle(context),
+                                onPressed: () => AuthService().signInWithGoogle(context),
                               ),
                             ],
                           )
@@ -217,9 +205,7 @@ class _AuthPageState extends State<AuthPage> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 AuthService().signUp(
-                                    context,
-                                    _emailController.text,
-                                    _passwordController.text);
+                                    context, _emailController.text, _passwordController.text);
                               }
                             },
                             style: ButtonStyles.shadowPadding,

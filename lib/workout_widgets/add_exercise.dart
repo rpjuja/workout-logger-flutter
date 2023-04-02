@@ -9,10 +9,7 @@ import '../styles.dart';
 
 class AddExercise extends StatefulWidget {
   const AddExercise(
-      {Key? key,
-      this.testDatabaseReference,
-      required this.userId,
-      required this.selectedDate})
+      {Key? key, this.testDatabaseReference, required this.userId, required this.selectedDate})
       : super(key: key);
 
   final DatabaseReference? testDatabaseReference;
@@ -30,25 +27,21 @@ class _AddExerciseState extends State<AddExercise> {
   void initState() {
     super.initState();
     // When testing, the widget will receive a testDatabaseReference, otherwise use the real database
-    _workoutRef = widget.testDatabaseReference ??
-        FirebaseDatabase.instance.ref("exercises");
+    _workoutRef = widget.testDatabaseReference ?? FirebaseDatabase.instance.ref("exercises");
   }
 
-  Future<void> _addExercise(String name, String sets, String reps,
-      String weight, MuscleGroup primary, MuscleGroup secondary) async {
+  Future<void> _addExercise(String name, String sets, String reps, String weight,
+      MuscleGroup primary, MuscleGroup secondary) async {
     final date = widget.selectedDate.toString().split(" ")[0];
     final String queryYear = date.split("-")[0],
         queryMonth = date.split("-")[1],
         queryDay = date.split("-")[2];
 
-    var exerciseId = _workoutRef
-        .child('${widget.userId}/$queryYear/$queryMonth/$queryDay')
-        .push()
-        .key;
+    var exerciseId =
+        _workoutRef.child('${widget.userId}/$queryYear/$queryMonth/$queryDay').push().key;
     try {
       await _workoutRef
-          .child(
-              "${widget.userId}/$queryYear/$queryMonth/$queryDay/$exerciseId")
+          .child("${widget.userId}/$queryYear/$queryMonth/$queryDay/$exerciseId")
           .set({
             'name': name,
             'sets': sets,
@@ -58,11 +51,11 @@ class _AddExerciseState extends State<AddExercise> {
             'secondaryMuscleGroup': secondary.name.toString(),
           })
           .then((value) => Navigator.of(context).pop(true))
-          .then((value) => ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('$name added'))));
+          .then((value) =>
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$name added'))));
     } on FirebaseException catch (err) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error adding exercise: ${getErrorMessage(err)}')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error adding exercise: ${getErrorMessage(err)}')));
     }
   }
 
@@ -79,8 +72,7 @@ class _AddExerciseState extends State<AddExercise> {
               showDialog(
                   context: context,
                   builder: ((context) {
-                    return ExerciseForm(
-                        parentName: "add", onConfirm: _addExercise);
+                    return ExerciseForm(parentName: "add", onConfirm: _addExercise);
                   }));
             },
             child: const Text('Add exercise'),

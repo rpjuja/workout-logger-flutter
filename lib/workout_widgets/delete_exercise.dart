@@ -23,8 +23,7 @@ class DeleteExercise extends StatefulWidget {
 }
 
 class _DeleteExerciseState extends State<DeleteExercise> {
-  final DatabaseReference _workoutRef =
-      FirebaseDatabase.instance.ref("/exercises/");
+  final DatabaseReference _workoutRef = FirebaseDatabase.instance.ref("/exercises/");
 
   Future<void> _deleteExercise() async {
     final date = widget.selectedDate.toString().split(" ")[0];
@@ -36,11 +35,11 @@ class _DeleteExerciseState extends State<DeleteExercise> {
           .child("${widget.userId}/$queryYear/$queryMonth/$queryDay/${widget.exerciseId}")
           .remove()
           .then((value) => Navigator.of(context).pop(true))
-          .then((value) => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('${widget.exerciseName} removed'))));
+          .then((value) => ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('${widget.exerciseName} removed'))));
     } on FirebaseException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error deleting exercise:/n${getErrorMessage(e)}')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error deleting exercise:/n${getErrorMessage(e)}')));
     }
   }
 

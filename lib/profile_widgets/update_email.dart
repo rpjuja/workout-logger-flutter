@@ -56,8 +56,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
               );
             });
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
       }
     }
   }

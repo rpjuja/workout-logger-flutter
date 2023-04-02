@@ -6,8 +6,7 @@ import 'auth_service.dart';
 
 class ResetPassword extends StatefulWidget {
   final Function() returnToLogin;
-  const ResetPassword(
-      {Key? key, required this.returnToLogin, required this.email})
+  const ResetPassword({Key? key, required this.returnToLogin, required this.email})
       : super(key: key);
 
   final String email;

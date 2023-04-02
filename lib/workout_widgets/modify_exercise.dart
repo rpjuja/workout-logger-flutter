@@ -9,10 +9,7 @@ import 'exercise_entry.dart';
 
 class ModifyExercise extends StatefulWidget {
   const ModifyExercise(
-      {Key? key,
-      required this.userId,
-      required this.selectedDate,
-      required this.exercise})
+      {Key? key, required this.userId, required this.selectedDate, required this.exercise})
       : super(key: key);
 
   final String userId;
@@ -24,11 +21,10 @@ class ModifyExercise extends StatefulWidget {
 }
 
 class _ModifyExerciseState extends State<ModifyExercise> {
-  final DatabaseReference _workoutRef =
-      FirebaseDatabase.instance.ref("exercises");
+  final DatabaseReference _workoutRef = FirebaseDatabase.instance.ref("exercises");
 
-  Future<void> _modifyExercise(String name, String sets, String reps,
-      String weight, MuscleGroup primary, MuscleGroup secondary) async {
+  Future<void> _modifyExercise(String name, String sets, String reps, String weight,
+      MuscleGroup primary, MuscleGroup secondary) async {
     final date = widget.selectedDate.toString().split(" ")[0];
     final String queryYear = date.split("-")[0],
         queryMonth = date.split("-")[1],
@@ -36,8 +32,7 @@ class _ModifyExerciseState extends State<ModifyExercise> {
 
     try {
       await _workoutRef
-          .child(
-              "${widget.userId}/$queryYear/$queryMonth/$queryDay/${widget.exercise.id}")
+          .child("${widget.userId}/$queryYear/$queryMonth/$queryDay/${widget.exercise.id}")
           .set({
             'name': name,
             'sets': sets,
@@ -50,16 +45,14 @@ class _ModifyExerciseState extends State<ModifyExercise> {
           .then((value) => ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text('$name modified'))));
     } on FirebaseException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error editing exercise: ${getErrorMessage(e)}')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error editing exercise: ${getErrorMessage(e)}')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return ExerciseForm(
-        parentName: "modify",
-        onConfirm: _modifyExercise,
-        exercise: widget.exercise);
+        parentName: "modify", onConfirm: _modifyExercise, exercise: widget.exercise);
   }
 }

@@ -4,11 +4,7 @@ class NavBar extends StatefulWidget {
   final Function(DateTime) dateChanged;
   final Function(bool) pageChanged;
 
-  const NavBar(
-      {Key? key,
-      this.date,
-      required this.dateChanged,
-      required this.pageChanged})
+  const NavBar({Key? key, this.date, required this.dateChanged, required this.pageChanged})
       : super(key: key);
 
   final DateTime? date;
@@ -60,8 +56,8 @@ class _NavBarState extends State<NavBar> with RestorationMixin {
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_restorableDatePickerRouteFuture,
-        'date_picker_route_future_for_calendar');
+    registerForRestoration(
+        _restorableDatePickerRouteFuture, 'date_picker_route_future_for_calendar');
   }
 
   @override

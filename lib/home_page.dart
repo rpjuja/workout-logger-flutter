@@ -28,8 +28,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
 
   void _dateSubtracted() {
     setState(() {
-      _selectedDate.value =
-          _selectedDate.value.subtract(const Duration(days: 1));
+      _selectedDate.value = _selectedDate.value.subtract(const Duration(days: 1));
     });
   }
 
@@ -53,8 +52,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset:
-          true, // Prevents keyboard from resizing and overflowing the screen
+      resizeToAvoidBottomInset: true, // Prevents keyboard from resizing and overflowing the screen
       appBar: const TopBar(),
       body: _showWorkoutPage
           ? WorkoutPage(

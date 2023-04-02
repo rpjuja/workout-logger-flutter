@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:workout_logger_app/styles.dart';
 
 import '../auth_widgets/auth_service.dart';
 
@@ -16,8 +15,7 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordState extends State<ChangePassword> {
   final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -31,8 +29,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Center(
-          child: Text("Change Password", style: TextStyle(fontSize: 20))),
+      title: const Center(child: Text("Change Password", style: TextStyle(fontSize: 20))),
       content: Form(
         key: _formKey,
         child: Column(
@@ -62,9 +59,7 @@ class _ChangePasswordState extends State<ChangePassword> {
               child: TextFormField(
                 controller: _newPasswordController,
                 validator: (value) {
-                  return value!.length < 6
-                      ? 'Password must be at least 6 characters'
-                      : null;
+                  return value!.length < 6 ? 'Password must be at least 6 characters' : null;
                 },
                 obscureText: true,
                 enableSuggestions: false,
@@ -107,9 +102,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             onPressed: () => {
                   if (_formKey.currentState!.validate())
                     AuthService().changePassword(
-                        context,
-                        _oldPasswordController.text,
-                        _newPasswordController.text),
+                        context, _oldPasswordController.text, _newPasswordController.text),
                 },
             child: const Text("Confirm")),
       ],

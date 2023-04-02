@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/CustomIcons.ttf
 ///
-/// 
+///
 /// * Font Awesome 5, Copyright (C) 2016 by Dave Gandy
 ///         Author:    Dave Gandy
 ///         License:   SIL (https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt)
@@ -27,5 +27,6 @@ class CustomIcons {
 
   static const IconData google_1 = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   // ignore: constant_identifier_names
-  static const IconData google_plus_g = IconData(0xf0d5, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData google_plus_g =
+      IconData(0xf0d5, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

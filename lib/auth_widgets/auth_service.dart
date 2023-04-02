@@ -30,20 +30,10 @@ class AuthService {
         });
   }
 
-  Future<User?> getUserData(BuildContext context) async {
+  Future<void> signUp(BuildContext context, String email, String password) async {
     try {
-      return FirebaseAuth.instance.currentUser!;
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
-    }
-  }
-
-  Future<void> signUp(
-      BuildContext context, String email, String password) async {
-    try {
-      UserCredential user = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential user =
+          await _auth.createUserWithEmailAndPassword(email: email, password: password);
       await user.user?.sendEmailVerification();
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,8 +44,7 @@ class AuthService {
     }
   }
 
-  Future<void> signIn(
-      BuildContext context, String email, String password) async {
+  Future<void> signIn(BuildContext context, String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email,
@@ -76,8 +65,7 @@ class AuthService {
       if (!kIsWeb) {
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
         if (googleUser != null) {
-          final GoogleSignInAuthentication googleAuth =
-              await googleUser.authentication;
+          final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
           final OAuthCredential credential = GoogleAuthProvider.credential(
             accessToken: googleAuth.accessToken,
@@ -101,9 +89,8 @@ class AuthService {
 
   Future<void> resetPassword(BuildContext context, String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email).then((value) =>
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Password reset email sent"))));
+      await _auth.sendPasswordResetEmail(email: email).then((value) => ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Password reset email sent"))));
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -113,15 +100,14 @@ class AuthService {
     }
   }
 
-  Future<void> changePassword(
-      BuildContext context, String oldPassword, String newPassword) async {
+  Future<void> changePassword(BuildContext context, String oldPassword, String newPassword) async {
     try {
       await reauthenticate(context, oldPassword);
       await _auth.currentUser!
           .updatePassword(newPassword)
           .then((value) => Navigator.of(context).pop(true))
-          .then((value) => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Password changed successfully"))));
+          .then((value) => ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Password changed successfully"))));
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -137,8 +123,7 @@ class AuthService {
       await user.reauthenticateWithCredential(
           EmailAuthProvider.credential(email: user.email!, password: password));
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
     }
   }
 
@@ -148,12 +133,10 @@ class AuthService {
       if (!kIsWeb) {
         final User user = _auth.currentUser!;
 
-        final GoogleSignInAccount? googleUser = await _googleSignIn
-            .disconnect()
-            .then((value) => _googleSignIn.signIn());
+        final GoogleSignInAccount? googleUser =
+            await _googleSignIn.disconnect().then((value) => _googleSignIn.signIn());
         if (googleUser != null) {
-          final GoogleSignInAuthentication googleAuth =
-              await googleUser.authentication;
+          final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
           final OAuthCredential credential = GoogleAuthProvider.credential(
             accessToken: googleAuth.accessToken,

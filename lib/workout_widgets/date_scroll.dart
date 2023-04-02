@@ -5,11 +5,7 @@ import 'package:workout_logger_app/styles.dart';
 class DateScroll extends StatefulWidget {
   final Function() dateAdded;
   final Function() dateSubtracted;
-  const DateScroll(
-      {Key? key,
-      this.date,
-      required this.dateAdded,
-      required this.dateSubtracted})
+  const DateScroll({Key? key, this.date, required this.dateAdded, required this.dateSubtracted})
       : super(key: key);
 
   final DateTime? date;
@@ -31,8 +27,8 @@ class _DateScrollState extends State<DateScroll> {
     return Container(
       height: 50.0,
       width: double.infinity,
-      margin: EdgeInsets.symmetric(
-          vertical: 20.0, horizontal: MediaQuery.of(context).size.width * 0.1),
+      margin:
+          EdgeInsets.symmetric(vertical: 20.0, horizontal: MediaQuery.of(context).size.width * 0.1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

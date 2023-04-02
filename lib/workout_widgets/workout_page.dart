@@ -38,8 +38,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
         _user = FirebaseAuth.instance.currentUser!;
       });
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
     }
   }
 

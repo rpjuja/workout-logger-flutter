@@ -28,14 +28,13 @@ class _DropdownSelectionState extends State<DropdownSelection> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerLeft,
-      margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.1, 20,
-          MediaQuery.of(context).size.width * 0.5, 0),
+      margin: EdgeInsets.fromLTRB(
+          MediaQuery.of(context).size.width * 0.1, 20, MediaQuery.of(context).size.width * 0.5, 0),
       child: DropdownButtonFormField<MuscleGroup>(
         focusNode: _dropdownFocusNode,
         value: widget.selectedGroup,
         icon: const Icon(Icons.arrow_downward),
-        iconEnabledColor:
-            _dropdownFocusNode.hasFocus ? Colors.deepPurple : Colors.grey,
+        iconEnabledColor: _dropdownFocusNode.hasFocus ? Colors.deepPurple : Colors.grey,
         iconSize: 24,
         elevation: 16,
         onTap: _requestFocus,

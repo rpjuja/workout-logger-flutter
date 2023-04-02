@@ -6,10 +6,7 @@ class MonthScroll extends StatefulWidget {
   final Function() nextMonth;
   final Function() previousMonth;
   const MonthScroll(
-      {Key? key,
-      required this.selectedDate,
-      required this.nextMonth,
-      required this.previousMonth})
+      {Key? key, required this.selectedDate, required this.nextMonth, required this.previousMonth})
       : super(key: key);
 
   final DateTime selectedDate;
@@ -55,8 +52,8 @@ class _MonthScrollState extends State<MonthScroll> {
     return Container(
       height: 50.0,
       width: double.infinity,
-      margin: EdgeInsets.symmetric(
-          vertical: 20.0, horizontal: MediaQuery.of(context).size.width * 0.1),
+      margin:
+          EdgeInsets.symmetric(vertical: 20.0, horizontal: MediaQuery.of(context).size.width * 0.1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -67,8 +64,7 @@ class _MonthScrollState extends State<MonthScroll> {
             },
             child: const Icon(Icons.arrow_back),
           ),
-          Text(
-              "${_printMonth(widget.selectedDate.month)} ${widget.selectedDate.year}"),
+          Text("${_printMonth(widget.selectedDate.month)} ${widget.selectedDate.year}"),
           ElevatedButton(
             style: ButtonStyles.shadowPadding,
             onPressed: () {

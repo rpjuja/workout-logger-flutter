@@ -4,8 +4,7 @@ import '../muscle_group.dart';
 import 'exercise_entry.dart';
 
 class ExerciseForm extends StatefulWidget {
-  final Function(String, String, String, String, MuscleGroup, MuscleGroup)
-      onConfirm;
+  final Function(String, String, String, String, MuscleGroup, MuscleGroup) onConfirm;
 
   const ExerciseForm({
     Key? key,
@@ -106,8 +105,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                       validator: (value) {
                         if (value == null || !_isNumeric(value)) {
                           return 'Please enter a number';
-                        } else if (int.parse(value) <= 0 ||
-                            int.parse(value) > 10) {
+                        } else if (int.parse(value) <= 0 || int.parse(value) > 10) {
                           return 'Please enter a number between 1 and 10';
                         }
                         return null;
@@ -207,8 +205,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                   })
                 },
                 validator: (value) {
-                  if (value != MuscleGroup.none &&
-                      value == _selectedPrimaryMuscleGroup) {
+                  if (value != MuscleGroup.none && value == _selectedPrimaryMuscleGroup) {
                     return "Primary and secondary muscle groups can't be the same";
                   } else if (value != MuscleGroup.none &&
                       _selectedPrimaryMuscleGroup == MuscleGroup.none) {
@@ -233,11 +230,8 @@ class _ExerciseFormState extends State<ExerciseForm> {
               preferBelow: false,
               triggerMode: TooltipTriggerMode.tap,
               showDuration: const Duration(seconds: 10),
-              margin: EdgeInsets.fromLTRB(
-                  MediaQuery.of(context).size.width * 0.1,
-                  0,
-                  MediaQuery.of(context).size.width * 0.1,
-                  0),
+              margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.1, 0,
+                  MediaQuery.of(context).size.width * 0.1, 0),
               child: const Icon(
                 Icons.info,
               ),

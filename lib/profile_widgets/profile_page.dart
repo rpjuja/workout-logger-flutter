@@ -39,8 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
         _user = FirebaseAuth.instance.currentUser!;
       });
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
     }
   }
 
@@ -54,8 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ));
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
     }
   }
 
@@ -76,12 +74,10 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             _editingEmail
                 ? UpdateEmail(
-                    stopEditingEmail: _stopEditingEmail,
-                    getUserData: _getUserData,
-                    user: _user)
+                    stopEditingEmail: _stopEditingEmail, getUserData: _getUserData, user: _user)
                 : Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.1),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
                     child: RichText(
                       text: TextSpan(
                         children: [
@@ -104,8 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ? WidgetSpan(
                                   alignment: PlaceholderAlignment.middle,
                                   child: Container(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(5, 0, 0, 3),
+                                    padding: const EdgeInsets.fromLTRB(5, 0, 0, 3),
                                     child: IconButton(
                                       icon: const Icon(Icons.edit),
                                       hoverColor: Colors.transparent,

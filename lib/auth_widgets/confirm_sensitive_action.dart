@@ -32,8 +32,7 @@ class _ConfirmSensitiveActionState extends State<ConfirmSensitiveAction> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Center(
-          child: Text("Reauthenticate to confirm action",
-              style: TextStyle(fontSize: 20))),
+          child: Text("Reauthenticate to confirm action", style: TextStyle(fontSize: 20))),
       content: Form(
           key: _formKey,
           child: TextFormField(
@@ -48,14 +47,10 @@ class _ConfirmSensitiveActionState extends State<ConfirmSensitiveAction> {
             enableSuggestions: false,
             autocorrect: false,
             decoration: const InputDecoration(
-                labelText: 'Password',
-                errorMaxLines: 2,
-                contentPadding: EdgeInsets.only(left: 10)),
+                labelText: 'Password', errorMaxLines: 2, contentPadding: EdgeInsets.only(left: 10)),
           )),
       actions: <Widget>[
-        TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("Cancel")),
+        TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text("Cancel")),
         ElevatedButton(
             style: ButtonStyles.shadowPadding,
             onPressed: () => {

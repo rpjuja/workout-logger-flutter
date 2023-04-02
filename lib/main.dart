@@ -52,9 +52,9 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
           title: 'Workout Tracker',
           theme: ThemeData(
-            colorScheme:
-                ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
-                    .copyWith(secondary: Colors.deepPurple[300]),
+            primarySwatch: Colors.deepPurple,
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
+                .copyWith(secondary: Colors.deepPurple[300]),
             textTheme: const TextTheme(
               titleLarge: TextStyle(fontSize: 26.0),
               titleMedium: TextStyle(fontSize: 18.0),

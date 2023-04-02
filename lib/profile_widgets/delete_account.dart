@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:workout_logger_app/auth_widgets/auth_service.dart';
-import 'package:workout_logger_app/styles.dart';
 
 import '../auth_widgets/confirm_sensitive_action.dart';
 import '../error_messages.dart';
@@ -21,9 +20,7 @@ class DeleteAccount extends StatefulWidget {
 class _DeleteAccountState extends State<DeleteAccount> {
   Future<void> _deleteAccount() async {
     try {
-      await widget.user
-          .delete()
-          .then(((value) => Navigator.of(context).pop(true)));
+      await widget.user.delete().then(((value) => Navigator.of(context).pop(true)));
     } on FirebaseAuthException catch (e) {
       // If the user's credential is too old, they need to reauthenticate.
       if (e.code == 'requires-recent-login' &&
@@ -43,8 +40,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
             .then((value) => _deleteAccount())
             .then((value) => Navigator.of(context).pop(true));
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
       }
     }
   }
@@ -53,11 +49,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("Confirm"),
-      content: const Text(
-          'Are you sure you wish to delete your account? Everything will be lost.'),
+      content: const Text('Are you sure you wish to delete your account? Everything will be lost.'),
       actions: <Widget>[
-        ElevatedButton(
-            onPressed: () => _deleteAccount(), child: const Text("Delete")),
+        ElevatedButton(onPressed: () => _deleteAccount(), child: const Text("Delete")),
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: const Text("Cancel"),

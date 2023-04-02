@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:workout_logger_app/auth_widgets/auth_service.dart';
 import 'package:workout_logger_app/error_messages.dart';
 import 'package:workout_logger_app/muscle_group.dart';
 
@@ -35,14 +34,7 @@ class _ProgressionChartState extends State<ProgressionChart> {
   void initState() {
     super.initState();
     _workoutRef = FirebaseDatabase.instance.ref("exercises");
-    AuthService()
-        .getUserData(context)
-        .then((value) => {
-              setState(() {
-                _userId = value!.uid;
-              })
-            })
-        .then((value) => _getChartData());
+    _getUserData().then((value) => _getChartData());
   }
 
   @override
@@ -54,6 +46,16 @@ class _ProgressionChartState extends State<ProgressionChart> {
         _dataFetched = false;
       });
       _getChartData();
+    }
+  }
+
+  Future<void> _getUserData() async {
+    try {
+      setState(() {
+        _userId = FirebaseAuth.instance.currentUser!.uid;
+      });
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
     }
   }
 

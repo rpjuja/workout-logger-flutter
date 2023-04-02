@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:workout_logger_app/muscle_group.dart';
+import 'package:workout_logger_app/progression_widgets/dropdown_selection.dart';
 
+import 'chart_info.dart';
 import 'month_scroll.dart';
 import 'progression_chart.dart';
 
@@ -17,6 +20,7 @@ class ProgressionPage extends StatefulWidget {
 
 class _ProgressionPageState extends State<ProgressionPage> {
   late DateTime _date;
+  late MuscleGroup _selectedGroup = MuscleGroup.abs;
 
   @override
   void initState() {
@@ -36,13 +40,20 @@ class _ProgressionPageState extends State<ProgressionPage> {
     });
   }
 
+  void _muscleGroupChanged(MuscleGroup muscleGroup) {
+    setState(() {
+      _selectedGroup = muscleGroup;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        MonthScroll(
-            date: _date, nextMonth: _nextMonth, previousMonth: _previousMonth),
-        const ProgressionChart()
+        MonthScroll(selectedDate: _date, nextMonth: _nextMonth, previousMonth: _previousMonth),
+        DropdownSelection(selectedGroup: _selectedGroup, muscleGroupChanged: _muscleGroupChanged),
+        ProgressionChart(selectedDate: _date, selectedGroup: _selectedGroup),
+        const ChartInfo(),
       ],
     );
   }

@@ -30,7 +30,17 @@ class AuthService {
         });
   }
 
-  Future<void> signUp(BuildContext context, String email, String password) async {
+  Future<User?> getUserData(BuildContext context) async {
+    try {
+      return FirebaseAuth.instance.currentUser!;
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
+    }
+  }
+
+  Future<void> signUp(
+      BuildContext context, String email, String password) async {
     try {
       UserCredential user = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -44,7 +54,8 @@ class AuthService {
     }
   }
 
-  Future<void> signIn(BuildContext context, String email, String password) async {
+  Future<void> signIn(
+      BuildContext context, String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email,

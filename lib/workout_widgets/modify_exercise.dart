@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:workout_logger_app/workout_widgets/exercise_form.dart';
 
 import '../error_messages.dart';
@@ -30,11 +29,15 @@ class _ModifyExerciseState extends State<ModifyExercise> {
 
   Future<void> _modifyExercise(String name, String sets, String reps,
       String weight, MuscleGroup primary, MuscleGroup secondary) async {
-    final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
+    final date = widget.selectedDate.toString().split(" ")[0];
+    final String queryYear = date.split("-")[0],
+        queryMonth = date.split("-")[1],
+        queryDay = date.split("-")[2];
 
     try {
       await _workoutRef
-          .child("${widget.userId}/$queryDate/${widget.exercise.id}")
+          .child(
+              "${widget.userId}/$queryYear/$queryMonth/$queryDay/${widget.exercise.id}")
           .set({
             'name': name,
             'sets': sets,

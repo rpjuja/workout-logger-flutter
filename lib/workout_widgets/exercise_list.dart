@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:workout_logger_app/muscle_group.dart';
 import 'package:workout_logger_app/workout_widgets/copy_workout.dart';
 
@@ -64,9 +63,15 @@ class _ExerciseListState extends State<ExerciseList> {
   }
 
   Future<void> _getExercisesAndListen() async {
-    final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
-    _workoutSubscription =
-        _workoutRef.child("${widget.userId}/$queryDate").onValue.listen(
+    final date = widget.selectedDate.toString().split(" ")[0];
+    final String queryYear = date.split("-")[0],
+        queryMonth = date.split("-")[1],
+        queryDay = date.split("-")[2];
+
+    _workoutSubscription = _workoutRef
+        .child("${widget.userId}/$queryYear/$queryMonth/$queryDay")
+        .onValue
+        .listen(
       (event) {
         if (event.snapshot.exists) {
           Map<String, dynamic> exercises =

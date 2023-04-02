@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:workout_logger_app/muscle_group.dart';
 import 'package:workout_logger_app/workout_widgets/exercise_form.dart';
 
@@ -37,13 +36,19 @@ class _AddExerciseState extends State<AddExercise> {
 
   Future<void> _addExercise(String name, String sets, String reps,
       String weight, MuscleGroup primary, MuscleGroup secondary) async {
-    final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
+    final date = widget.selectedDate.toString().split(" ")[0];
+    final String queryYear = date.split("-")[0],
+        queryMonth = date.split("-")[1],
+        queryDay = date.split("-")[2];
 
-    var exerciseId =
-        _workoutRef.child('${widget.userId}/$queryDate').push().key;
+    var exerciseId = _workoutRef
+        .child('${widget.userId}/$queryYear/$queryMonth/$queryDay')
+        .push()
+        .key;
     try {
       await _workoutRef
-          .child("${widget.userId}/$queryDate/$exerciseId")
+          .child(
+              "${widget.userId}/$queryYear/$queryMonth/$queryDay/$exerciseId")
           .set({
             'name': name,
             'sets': sets,

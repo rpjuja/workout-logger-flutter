@@ -1,6 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:workout_logger_app/styles.dart';
 
 class CopyWorkout extends StatefulWidget {
@@ -76,17 +75,25 @@ class _CopyWorkoutState extends State<CopyWorkout> with RestorationMixin {
   }
 
   Future<void> _copyPreviousWorkout(date) async {
-    final previousQueryDate = DateFormat("dd,MM,yyyy").format(date);
-    final previousWorkout =
-        await _workoutRef.child("${widget.userId}/$previousQueryDate").once();
-    final currentqueryDate =
-        DateFormat("dd,MM,yyyy").format(widget.selectedDate);
+    final prevQueryDate = date.toString().split(" ")[0];
+    final String prevQueryYear = prevQueryDate.split("-")[0],
+        prevQueryMonth = prevQueryDate.split("-")[1],
+        prevQueryDay = prevQueryDate.split("-")[2];
+
+    final previousWorkout = await _workoutRef
+        .child("${widget.userId}/$prevQueryYear/$prevQueryMonth/$prevQueryDay")
+        .once();
+
+    final currentQueryDate = widget.selectedDate.toString().split(" ")[0];
+    final String currentQueryYear = currentQueryDate.split("-")[0],
+        currentQueryMonth = currentQueryDate.split("-")[1],
+        currentQueryDay = currentQueryDate.split("-")[2];
+
     if (previousWorkout.snapshot.exists) {
       await _workoutRef
-          .child("${widget.userId}/$currentqueryDate")
-          .set(previousWorkout.snapshot.value)
-          .then((value) => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Workout copied from $date'))));
+          .child(
+              "${widget.userId}/$currentQueryYear/$currentQueryMonth/$currentQueryDay")
+          .set(previousWorkout.snapshot.value);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No workout to copy on that date')));

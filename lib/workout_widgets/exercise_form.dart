@@ -264,7 +264,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                           _weightController.text,
                           _selectedPrimaryMuscleGroup,
                           _selectedSecondaryMuscleGroup)
-                      .then(_clearForm());
+                      .then((value) => _clearForm());
                 }
               },
               child: widget.parentName == "add"

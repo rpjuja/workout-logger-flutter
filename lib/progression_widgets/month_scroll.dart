@@ -7,23 +7,18 @@ class MonthScroll extends StatefulWidget {
   final Function() previousMonth;
   const MonthScroll(
       {Key? key,
-      required this.date,
+      required this.selectedDate,
       required this.nextMonth,
       required this.previousMonth})
       : super(key: key);
 
-  final DateTime date;
+  final DateTime selectedDate;
 
   @override
   State<MonthScroll> createState() => _MonthScrollState();
 }
 
 class _MonthScrollState extends State<MonthScroll> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   String _printMonth(int month) {
     switch (month) {
       case 1:
@@ -72,7 +67,8 @@ class _MonthScrollState extends State<MonthScroll> {
             },
             child: const Icon(Icons.arrow_back),
           ),
-          Text("${_printMonth(widget.date.month)} ${widget.date.year}"),
+          Text(
+              "${_printMonth(widget.selectedDate.month)} ${widget.selectedDate.year}"),
           ElevatedButton(
             style: ButtonStyles.shadowPadding,
             onPressed: () {

@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../error_messages.dart';
 
@@ -28,10 +27,13 @@ class _DeleteExerciseState extends State<DeleteExercise> {
       FirebaseDatabase.instance.ref("/exercises/");
 
   Future<void> _deleteExercise() async {
-    final queryDate = DateFormat("dd,MM,yyyy").format(widget.selectedDate);
+    final date = widget.selectedDate.toString().split(" ")[0];
+    final String queryYear = date.split("-")[0],
+        queryMonth = date.split("-")[1],
+        queryDay = date.split("-")[2];
     try {
       await _workoutRef
-          .child("${widget.userId}/$queryDate/${widget.exerciseId}")
+          .child("${widget.userId}/$queryYear/$queryMonth/$queryDay/${widget.exerciseId}")
           .remove()
           .then((value) => Navigator.of(context).pop(true))
           .then((value) => ScaffoldMessenger.of(context).showSnackBar(

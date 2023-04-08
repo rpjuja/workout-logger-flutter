@@ -104,8 +104,6 @@ class _ExerciseListState extends State<ExerciseList> {
           id: key,
           name: value['name'],
           sets: value['sets'],
-          reps: value['reps'],
-          weight: value['weight'],
           primaryMuscleGroup: primaryMuscleGroup,
           secondaryMuscleGroup: secondaryMuscleGroup,
         ));

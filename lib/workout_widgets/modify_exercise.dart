@@ -23,8 +23,8 @@ class ModifyExercise extends StatefulWidget {
 class _ModifyExerciseState extends State<ModifyExercise> {
   final DatabaseReference _workoutRef = FirebaseDatabase.instance.ref("exercises");
 
-  Future<void> _modifyExercise(String name, String sets, String reps, String weight,
-      MuscleGroup primary, MuscleGroup secondary) async {
+  Future<void> _modifyExercise(
+      String name, Map<dynamic, dynamic> sets, MuscleGroup primary, MuscleGroup secondary) async {
     final date = widget.selectedDate.toString().split(" ")[0];
     final String queryYear = date.split("-")[0],
         queryMonth = date.split("-")[1],
@@ -36,8 +36,6 @@ class _ModifyExerciseState extends State<ModifyExercise> {
           .set({
             'name': name,
             'sets': sets,
-            'reps': reps,
-            'weight': weight,
             'primaryMuscleGroup': primary.name.toString(),
             'secondaryMuscleGroup': secondary.name.toString(),
           })

@@ -2,10 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/intl.dart';
 import 'package:workout_logger_app/firebase_options.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
-import 'package:workout_logger_app/workout_widgets/add_exercise.dart';
 import 'package:workout_logger_app/workout_widgets/exercise_list.dart';
 // import 'package:workout_logger_app/workout_widgets/workout_notes.dart';
 
@@ -16,13 +14,27 @@ void main() {
   // Create test data
   const dummyData = {
     'name': 'Bench Press',
-    'sets': "3",
-    'reps': "10",
-    'weight': "100",
+    'sets': [
+      {
+        'reps': '10',
+        'weight': '100',
+      },
+      {
+        'reps': '10',
+        'weight': '97.5',
+      },
+      {
+        'reps': '8',
+        'weight': '97.5',
+      }
+    ],
   };
   String userId = "0";
   DateTime date = DateTime(2021, 9, 1);
-  String dateString = DateFormat("dd,MM,yyyy").format(date);
+  final dateString = date.toString().split(" ")[0];
+  String year = dateString.split("-")[0],
+      month = dateString.split("-")[1],
+      day = dateString.split("-")[2];
   String exerciseId = "0";
 
   // A helper function to create a MaterialApp to wrap the tested widget.
@@ -37,8 +49,7 @@ void main() {
   // Set up firebase before tests
   setUpAll(() async {
     Firebase.initializeApp(
-        name: "workout-logger-app",
-        options: DefaultFirebaseOptions.currentPlatform);
+        name: "workout-logger-app", options: DefaultFirebaseOptions.currentPlatform);
   });
 
   group('Exercise widgets:', () {
@@ -46,19 +57,14 @@ void main() {
       databaseReference = MockFirebaseDatabase.instance.ref("exercises");
 
       // Set test data to the mock database.
-      await databaseReference
-          .child("$userId/$dateString/$exerciseId")
-          .set(dummyData);
+      await databaseReference.child("$userId/$year/$month/$day/$exerciseId").set(dummyData);
     });
 
     testWidgets('Show the correct exercise', (WidgetTester tester) async {
       // Build widget inside a Column to avoid errors when running tests
       await tester.pumpWidget(buildTestableWidget(
         Column(children: [
-          ExerciseList(
-              testDatabaseReference: databaseReference,
-              userId: userId,
-              selectedDate: date)
+          ExerciseList(testDatabaseReference: databaseReference, userId: userId, selectedDate: date)
         ]),
       ));
 
@@ -71,61 +77,62 @@ void main() {
       expect(find.byType(Card), findsOneWidget);
       expect(find.text('Bench Press'), findsOneWidget);
       expect(find.text('3'), findsOneWidget);
-      expect(find.text('10'), findsOneWidget);
-      expect(find.text('100'), findsOneWidget);
+      expect(find.text('8-10'), findsOneWidget);
+      expect(find.text('97.5-100'), findsOneWidget);
     });
 
-    testWidgets("Delete the exercise", (widgetTester) async {
-      await widgetTester.pumpWidget(buildTestableWidget(
+    testWidgets("Delete the exercise", (tester) async {
+      await tester.pumpWidget(buildTestableWidget(
         Column(children: [
-          ExerciseList(
-              testDatabaseReference: databaseReference,
-              userId: userId,
-              selectedDate: date)
+          ExerciseList(testDatabaseReference: databaseReference, userId: userId, selectedDate: date)
         ]),
       ));
 
-      await widgetTester.idle();
-      await widgetTester.pump();
+      await tester.idle();
+      await tester.pump();
 
       // Swipe card to delete and advance frames until complete
-      await widgetTester.drag(find.byType(Card), const Offset(-500, 0));
-      await widgetTester.pumpAndSettle();
+      await tester.drag(find.byType(Card), const Offset(-500, 0));
+      await tester.pumpAndSettle();
 
       // Verify that the delete dialog is shown and confirm deletion
       expect(find.widgetWithText(AlertDialog, 'Confirm'), findsOneWidget);
-      expect(
-          find.widgetWithText(
-              AlertDialog, 'Are you sure you wish to delete Bench Press?'),
+      expect(find.widgetWithText(AlertDialog, 'Are you sure you wish to delete Bench Press?'),
           findsOneWidget);
       expect(find.text('Delete'), findsOneWidget);
       expect(find.text('Cancel'), findsOneWidget);
-      await widgetTester.tap(find.text('Delete'));
-      await widgetTester.pump();
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
 
-      // Verify that the exercise has been deleted
+      // Verify that the dialog is closed and exercise has been deleted
+      expect(find.byType(AlertDialog), findsNothing);
       expect(find.byType(Card), findsNothing);
       expect(find.text('Bench Press'), findsNothing);
     });
 
     testWidgets('Show the add exercise dialog and validator error messages',
         (WidgetTester tester) async {
-      await tester.pumpWidget(buildTestableWidget(AddExercise(
-        userId: userId,
-        selectedDate: date,
-        testDatabaseReference: databaseReference,
-      )));
+      await tester.pumpWidget(buildTestableWidget(Column(children: [
+        ExerciseList(
+          testDatabaseReference: databaseReference,
+          userId: userId,
+          selectedDate: date,
+        )
+      ])));
+
+      await tester.idle();
+      await tester.pump();
 
       // Tap the add exercise button
       await tester.tap(find.byKey(const Key("addExerciseButton")));
       await tester.pump();
 
       // Verify that the add exercise dialog is shown
-      expect(find.widgetWithText(AlertDialog, 'Add Exercise'), findsOneWidget);
+      expect(find.widgetWithText(AlertDialog, 'Add exercise'), findsOneWidget);
       expect(find.byKey(const Key('exerciseNameField')), findsOneWidget);
-      expect(find.byKey(const Key('exerciseSetsField')), findsOneWidget);
-      expect(find.byKey(const Key('exerciseRepsField')), findsOneWidget);
-      expect(find.byKey(const Key('exerciseWeightField')), findsOneWidget);
+      expect(find.byKey(const Key('exerciseSetsDropdown')), findsOneWidget);
+      expect(find.byKey(const Key('exerciseRepsField0')), findsOneWidget);
+      expect(find.byKey(const Key('exerciseWeightField0')), findsOneWidget);
       expect(find.byKey(const Key('confirmButton')), findsOneWidget);
       expect(find.byKey(const Key('cancelButton')), findsOneWidget);
 
@@ -133,19 +140,20 @@ void main() {
       await tester.tap(find.byKey(const Key('confirmButton')));
       await tester.pump();
       expect(find.text('Please enter a name'), findsOneWidget);
-      expect(find.text('Please enter a number'), findsNWidgets(3));
+      expect(find.text('Please enter a number'), findsNWidgets(2));
 
       // Tap the cancel button and verify that the dialog is closed
       await tester.tap(find.byKey(const Key('cancelButton')));
-      await tester.pump();
+      await tester.pumpAndSettle();
       expect(find.widgetWithText(AlertDialog, 'Add Exercise'), findsNothing);
     });
 
     testWidgets('Add a new exercise', (WidgetTester tester) async {
-      await tester.pumpWidget(buildTestableWidget(AddExercise(
-          testDatabaseReference: databaseReference,
-          userId: userId,
-          selectedDate: date)));
+      await tester.pumpWidget(buildTestableWidget(
+        Column(children: [
+          ExerciseList(testDatabaseReference: databaseReference, userId: userId, selectedDate: date)
+        ]),
+      ));
 
       await tester.idle();
       await tester.pump();
@@ -154,37 +162,26 @@ void main() {
       await tester.tap(find.byKey(const Key("addExerciseButton")));
       await tester.pump();
 
-      // Edit the text fields and add the exercise
-      await tester.enterText(
-          find.byKey(const Key('exerciseNameField')), 'Squat');
-      await tester.enterText(find.byKey(const Key('exerciseSetsField')), '5');
-      await tester.enterText(find.byKey(const Key('exerciseRepsField')), '5');
-      await tester.enterText(
-          find.byKey(const Key('exerciseWeightField')), '200');
+      // Edit the exercise information and add the exercise
+      expect(find.widgetWithText(AlertDialog, 'Add exercise'), findsOneWidget);
+      await tester.enterText(find.byKey(const Key('exerciseNameField')), 'Squat');
+      await tester.tap(find.byKey(const Key('exerciseSetsDropdown')));
+      await tester.pump();
+      await tester.tap(find.text('2').last);
+      await tester.enterText(find.byKey(const Key('exerciseRepsField0')), '5');
+      await tester.enterText(find.byKey(const Key('exerciseWeightField0')), '200');
+      await tester.enterText(find.byKey(const Key('exerciseRepsField1')), '5');
+      await tester.enterText(find.byKey(const Key('exerciseWeightField1')), '195');
       await tester.tap(find.byKey(const Key("confirmButton")));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      // Verify that the dialog is closed
-      expect(find.widgetWithText(AlertDialog, 'Add Exercise'), findsNothing);
-
-      await tester.pumpWidget(buildTestableWidget(
-        Column(children: [
-          ExerciseList(
-              testDatabaseReference: databaseReference,
-              userId: userId,
-              selectedDate: date)
-        ]),
-      ));
-
-      await tester.idle();
-      await tester.pump();
-
-      // Verify that the exercise has been added to the UI
+      // Verify that the dialog is closed and the exercise has been added to the UI
+      expect(find.byType(AlertDialog), findsNothing);
       expect(find.byType(Card), findsNWidgets(2));
       expect(find.text('Bench Press'), findsOneWidget);
       expect(find.text('Squat'), findsOneWidget);
       expect(find.text('5'), findsNWidgets(2));
-      expect(find.text('200'), findsOneWidget);
+      expect(find.text('195-200'), findsOneWidget);
     });
   });
 

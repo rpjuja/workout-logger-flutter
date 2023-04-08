@@ -85,7 +85,7 @@ class _ProgressionChartState extends State<ProgressionChart> {
                         if (primaryMuscle == widget.selectedGroup.name ||
                             secondaryMuscle == widget.selectedGroup.name)
                           {
-                            exerciseSets = double.parse(exercise.child("sets").value.toString()),
+                            exerciseSets = exercise.child("sets").children.length.toDouble(),
                             exerciseDate = DateTime(
                                 int.parse(queryYear), int.parse(queryMonth), int.parse(day.key!)),
                             weekOfYear = weeksBetween(firstOfJanuary, exerciseDate),

@@ -30,8 +30,8 @@ class _AddExerciseState extends State<AddExercise> {
     _workoutRef = widget.testDatabaseReference ?? FirebaseDatabase.instance.ref("exercises");
   }
 
-  Future<void> _addExercise(String name, String sets, String reps, String weight,
-      MuscleGroup primary, MuscleGroup secondary) async {
+  Future<void> _addExercise(
+      String name, Map<dynamic, dynamic> sets, MuscleGroup primary, MuscleGroup secondary) async {
     final date = widget.selectedDate.toString().split(" ")[0];
     final String queryYear = date.split("-")[0],
         queryMonth = date.split("-")[1],
@@ -45,8 +45,6 @@ class _AddExerciseState extends State<AddExercise> {
           .set({
             'name': name,
             'sets': sets,
-            'reps': reps,
-            'weight': weight,
             'primaryMuscleGroup': primary.name.toString(),
             'secondaryMuscleGroup': secondary.name.toString(),
           })

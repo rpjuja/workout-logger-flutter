@@ -4,9 +4,7 @@ import 'package:workout_logger_app/muscle_group.dart';
 class ExerciseEntry extends StatelessWidget {
   final String id;
   final String name;
-  final String sets;
-  final String reps;
-  final String weight;
+  final List sets;
   final MuscleGroup primaryMuscleGroup;
   final MuscleGroup secondaryMuscleGroup;
 
@@ -15,11 +13,41 @@ class ExerciseEntry extends StatelessWidget {
       required this.id,
       required this.name,
       required this.sets,
-      required this.reps,
-      required this.weight,
       required this.primaryMuscleGroup,
       required this.secondaryMuscleGroup})
       : super(key: key);
+
+  String shortestHyphenLongestSet() {
+    int shortest = 999, longest = 0;
+    for (var set in sets) {
+      int setLength = int.parse(set['reps']);
+      if (setLength < shortest) shortest = setLength;
+      if (setLength > longest) longest = setLength;
+    }
+    if (shortest == longest) {
+      return shortest.toString();
+    } else {
+      return "$longest-$shortest";
+    }
+  }
+
+  String leastHyphenMostWeight() {
+    double least = 999, most = 0;
+    for (var set in sets) {
+      double setWeight = double.parse(set['weight']);
+      if (setWeight < least) least = setWeight;
+      if (setWeight > most) most = setWeight;
+    }
+    if (least == most) {
+      return removeDecimalZeroFormat(least);
+    } else {
+      return "${removeDecimalZeroFormat(most)}-${removeDecimalZeroFormat(least)}";
+    }
+  }
+
+  String removeDecimalZeroFormat(double n) {
+    return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +58,7 @@ class ExerciseEntry extends StatelessWidget {
       shadowColor: Colors.deepPurple[300]?.withOpacity(0.5),
       child: Row(children: [
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.4,
+          width: MediaQuery.of(context).size.width * 0.35,
           child: Padding(
               padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
               child: Container(
@@ -39,19 +67,19 @@ class ExerciseEntry extends StatelessWidget {
               )),
         ),
         Container(
-          width: MediaQuery.of(context).size.width * 0.1,
+          width: MediaQuery.of(context).size.width * 0.05,
           alignment: Alignment.center,
-          child: Text(sets),
+          child: Text(sets.length.toString()),
         ),
         Container(
           width: MediaQuery.of(context).size.width * 0.15,
           alignment: Alignment.center,
-          child: Text(reps),
+          child: Text(shortestHyphenLongestSet()),
         ),
         Container(
-          width: MediaQuery.of(context).size.width * 0.15,
+          width: MediaQuery.of(context).size.width * 0.25,
           alignment: Alignment.center,
-          child: Text(weight),
+          child: Text(leastHyphenMostWeight()),
         ),
       ]),
     );

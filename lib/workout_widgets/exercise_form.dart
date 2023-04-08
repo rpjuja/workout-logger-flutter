@@ -4,7 +4,7 @@ import '../muscle_group.dart';
 import 'exercise_entry.dart';
 
 class ExerciseForm extends StatefulWidget {
-  final Function(String, String, String, String, MuscleGroup, MuscleGroup) onConfirm;
+  final Function(String, Map<dynamic, dynamic>, MuscleGroup, MuscleGroup) onConfirm;
 
   const ExerciseForm({
     Key? key,
@@ -22,9 +22,9 @@ class ExerciseForm extends StatefulWidget {
 
 class _ExerciseFormState extends State<ExerciseForm> {
   final _nameController = TextEditingController();
-  final _setsController = TextEditingController();
-  final _repsController = TextEditingController();
-  final _weightController = TextEditingController();
+  int _setAmount = 1;
+  final List<TextEditingController> _repsControllers = <TextEditingController>[];
+  final List<TextEditingController> _weightControllers = <TextEditingController>[];
   MuscleGroup _selectedPrimaryMuscleGroup = MuscleGroup.none;
   MuscleGroup _selectedSecondaryMuscleGroup = MuscleGroup.none;
   final _formKey = GlobalKey<FormState>();
@@ -36,9 +36,13 @@ class _ExerciseFormState extends State<ExerciseForm> {
     super.initState();
     if (widget.exercise != null) {
       _nameController.text = widget.exercise!.name;
-      _setsController.text = widget.exercise!.sets;
-      _repsController.text = widget.exercise!.reps;
-      _weightController.text = widget.exercise!.weight;
+      _setAmount = widget.exercise!.sets.length;
+      for (int i = 0; i < widget.exercise!.sets.length; i++) {
+        _repsControllers.add(TextEditingController());
+        _weightControllers.add(TextEditingController());
+        _repsControllers[i].text = widget.exercise!.sets[i]['reps'].toString();
+        _weightControllers[i].text = widget.exercise!.sets[i]['weight'].toString();
+      }
       _selectedPrimaryMuscleGroup = widget.exercise!.primaryMuscleGroup;
       _selectedSecondaryMuscleGroup = widget.exercise!.secondaryMuscleGroup;
     }
@@ -47,18 +51,25 @@ class _ExerciseFormState extends State<ExerciseForm> {
   @override
   void dispose() {
     _nameController.dispose();
-    _setsController.dispose();
-    _repsController.dispose();
-    _weightController.dispose();
+    for (TextEditingController controller in _repsControllers) {
+      controller.dispose();
+    }
+    for (TextEditingController controller in _weightControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
   void _clearForm() {
     _nameController.clear();
-    _setsController.clear();
-    _repsController.clear();
-    _weightController.clear();
+    for (TextEditingController controller in _repsControllers) {
+      controller.clear();
+    }
+    for (TextEditingController controller in _weightControllers) {
+      controller.clear();
+    }
     setState(() {
+      _setAmount = 1;
       _selectedPrimaryMuscleGroup = MuscleGroup.none;
       _selectedSecondaryMuscleGroup = MuscleGroup.none;
     });
@@ -95,72 +106,108 @@ class _ExerciseFormState extends State<ExerciseForm> {
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 10,
+              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      key: const Key('exerciseSetsField'),
-                      controller: _setsController,
-                      validator: (value) {
-                        if (value == null || !_isNumeric(value)) {
-                          return 'Please enter a number';
-                        } else if (int.parse(value) <= 0 || int.parse(value) > 10) {
-                          return 'Please enter a number between 1 and 10';
-                        }
-                        return null;
+                  Flexible(
+                    fit: FlexFit.loose,
+                    flex: 1,
+                    // Dropdown button for sets
+                    child: DropdownButtonFormField<String>(
+                      key: const Key('exerciseSetsDropdown'),
+                      isDense: true,
+                      menuMaxHeight: MediaQuery.of(context).size.height * 0.3,
+                      alignment: Alignment.center,
+                      focusColor: Colors.white,
+                      value: _setAmount.toString(),
+                      items: List.generate(10, (index) => index + 1)
+                          .map((sets) => DropdownMenuItem<String>(
+                                value: sets.toString(),
+                                child: Text(sets.toString()),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _setAmount = int.parse(value!);
+                        });
                       },
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        hintText: 'Sets',
-                        errorMaxLines: 3,
-                      ),
                     ),
                   ),
                   const SizedBox(
                     width: 8,
                   ),
-                  Expanded(
-                    child: TextFormField(
-                      key: const Key('exerciseRepsField'),
-                      controller: _repsController,
-                      validator: (value) {
-                        if (value == null || !_isNumeric(value)) {
-                          return 'Please enter a number';
-                        }
-                        return null;
-                      },
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        hintText: 'Reps',
-                        errorMaxLines: 3,
-                      ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    flex: 2,
+                    child: SizedBox(
+                      // Make the listview scrollable if there are too many sets to show on the screen
+                      height: MediaQuery.of(context).size.height * 0.06 * _setAmount >
+                              MediaQuery.of(context).size.height * 0.24
+                          ? MediaQuery.of(context).size.height * 0.24
+                          : MediaQuery.of(context).size.height * 0.06 * _setAmount,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                          itemCount: _setAmount,
+                          itemBuilder: (BuildContext context, int index) {
+                            // Check that there are controllers shown for the amount of sets specified
+                            // filter out the empty controllers later
+                            if (index >= _repsControllers.length) {
+                              _repsControllers.add(TextEditingController());
+                              _weightControllers.add(TextEditingController());
+                            }
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    key: Key('exerciseRepsField$index'),
+                                    controller: _repsControllers[index],
+                                    validator: (value) {
+                                      if (value == null || !_isNumeric(value)) {
+                                        return 'Please enter a number';
+                                      }
+                                      return null;
+                                    },
+                                    textAlign: TextAlign.center,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Reps',
+                                      errorMaxLines: 3,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    key: Key('exerciseWeightField$index'),
+                                    controller: _weightControllers[index],
+                                    validator: (value) {
+                                      if (value == null || !_isNumeric(value)) {
+                                        return 'Please enter a number';
+                                      }
+                                      return null;
+                                    },
+                                    textAlign: TextAlign.center,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Weight',
+                                      errorMaxLines: 3,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
                     ),
                   ),
                   const SizedBox(
-                    width: 8,
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      key: const Key('exerciseWeightField'),
-                      controller: _weightController,
-                      validator: (value) {
-                        if (value == null || !_isNumeric(value)) {
-                          return 'Please enter a number';
-                        }
-                        return null;
-                      },
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        hintText: 'Weight',
-                        errorMaxLines: 3,
-                      ),
-                    ),
+                    height: 20,
                   ),
                 ],
               ),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
               const Text("Primary muscle group"),
               const SizedBox(height: 10),
@@ -250,13 +297,19 @@ class _ExerciseFormState extends State<ExerciseForm> {
               key: const Key('confirmButton'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
+                  // Create a map of sets that filters out the empty controllers
+                  // and is the length of the amount of sets specified
+                  Map<dynamic, dynamic> sets = {};
+                  for (int i = 0; i < _setAmount; i++) {
+                    if (_repsControllers[i].text != "") {
+                      sets[i] = {
+                        "reps": _repsControllers[i].text,
+                        "weight": _weightControllers[i].text
+                      };
+                    }
+                  }
                   widget
-                      .onConfirm(
-                          _nameController.text,
-                          _setsController.text,
-                          _repsController.text,
-                          _weightController.text,
-                          _selectedPrimaryMuscleGroup,
+                      .onConfirm(_nameController.text, sets, _selectedPrimaryMuscleGroup,
                           _selectedSecondaryMuscleGroup)
                       .then((value) => _clearForm());
                 }

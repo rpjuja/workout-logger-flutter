@@ -5,16 +5,18 @@ import 'package:workout_logger_app/styles.dart';
 class DateScroll extends StatefulWidget {
   final Function() dateAdded;
   final Function() dateSubtracted;
-  const DateScroll({Key? key, this.date, required this.dateAdded, required this.dateSubtracted})
+  const DateScroll(
+      {Key? key, required this.date, required this.dateAdded, required this.dateSubtracted})
       : super(key: key);
 
-  final DateTime? date;
+  final DateTime date;
 
   @override
   State<DateScroll> createState() => _DateScrollState();
 }
 
 class _DateScrollState extends State<DateScroll> {
+  
   int _calculateDifference(DateTime date) {
     DateTime now = DateTime.now();
     return DateTime(date.year, date.month, date.day)
@@ -40,13 +42,13 @@ class _DateScrollState extends State<DateScroll> {
             child: const Icon(Icons.arrow_back),
           ),
           // Conditionally render either "Today", "Yesterday", "Tomorrow" or the date
-          widget.date == null || _calculateDifference(widget.date!) == 0
+          _calculateDifference(widget.date) == 0
               ? const Text("Today")
-              : _calculateDifference(widget.date!) == -1
+              : _calculateDifference(widget.date) == -1
                   ? const Text("Yesterday")
-                  : _calculateDifference(widget.date!) == 1
+                  : _calculateDifference(widget.date) == 1
                       ? const Text("Tomorrow")
-                      : Text(DateFormat('d.M.yyyy').format(widget.date!)),
+                      : Text(DateFormat('d.M.yyyy').format(widget.date)),
           ElevatedButton(
             style: ButtonStyles.shadowPadding,
             onPressed: () {

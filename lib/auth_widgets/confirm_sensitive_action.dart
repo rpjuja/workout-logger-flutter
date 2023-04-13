@@ -57,8 +57,9 @@ class _ConfirmSensitiveActionState extends State<ConfirmSensitiveAction> {
                   if (_formKey.currentState!.validate())
                     AuthService()
                         .reauthenticate(context, _passwordController.text)
-                        .then((value) => widget.action())
-                        .then((value) => Navigator.of(context).pop(true)),
+                        .then((value) => {
+                              if (value) {widget.action().then(Navigator.of(context).pop(true))}
+                            })
                 },
             child: const Text("Confirm")),
       ],

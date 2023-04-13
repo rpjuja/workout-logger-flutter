@@ -91,35 +91,20 @@ class _ProgressionChartState extends State<ProgressionChart> {
                             weekOfYear = weeksBetween(firstOfJanuary, exerciseDate),
                             if (_totalSets.where((element) => element.x == weekOfYear).isEmpty)
                               {
-                                if (primaryMuscle == widget.selectedGroup.name)
-                                  {
-                                    setState(() {
-                                      _totalSets.add(ChartPoints(
-                                          x: weekOfYear,
-                                          primarySets: exerciseSets,
-                                          secondarySets: 0));
-                                    }),
-                                  }
-                                else
-                                  {
-                                    setState(() {
-                                      _totalSets.add(ChartPoints(
-                                          x: weekOfYear,
-                                          primarySets: 0,
-                                          secondarySets: exerciseSets));
-                                    }),
-                                  },
+                                primaryMuscle == widget.selectedGroup.name
+                                    ? _totalSets.add(ChartPoints(
+                                        x: weekOfYear, primarySets: exerciseSets, secondarySets: 0))
+                                    : _totalSets.add(ChartPoints(
+                                        x: weekOfYear, primarySets: 0, secondarySets: exerciseSets))
                               }
                             else
                               {
-                                setState(() {
-                                  _totalSets
-                                      .where((element) => element.x == weekOfYear)
-                                      .forEach((element) {
-                                    primaryMuscle == widget.selectedGroup.name
-                                        ? element.primarySets += exerciseSets
-                                        : element.secondarySets += exerciseSets;
-                                  });
+                                _totalSets
+                                    .where((element) => element.x == weekOfYear)
+                                    .forEach((element) {
+                                  primaryMuscle == widget.selectedGroup.name
+                                      ? element.primarySets += exerciseSets
+                                      : element.secondarySets += exerciseSets;
                                 })
                               }
                           }

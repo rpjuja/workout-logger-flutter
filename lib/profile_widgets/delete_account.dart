@@ -37,8 +37,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
           widget.user.providerData[0].providerId == 'google.com') {
         AuthService()
             .reauthenticateGoogleUser(context)
-            .then((value) => _deleteAccount())
-            .then((value) => Navigator.of(context).pop(true));
+            .then((value) => {if (value) _deleteAccount()});
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
       }

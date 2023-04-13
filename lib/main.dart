@@ -66,10 +66,10 @@ class _MyAppState extends State<MyApp> {
           ),
           debugShowCheckedModeBanner: false,
           // If firebase is already initialized, show the app directly
-          // handelAuthState shows login page if user is not logged in, otherwise shows home page
+          // handelAuthState shows login page if user is not logged in, otherwise shows homepage
           home: _initialized
               ? AuthService().handleAuthState()
-              // If firebase is not initialized, show the app once firebase has finished initializing
+              // Show the app once firebase has finished initializing
               : FutureBuilder(
                   future: _fbApp,
                   builder: (context, snapshot) {

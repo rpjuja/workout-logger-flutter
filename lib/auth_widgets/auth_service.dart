@@ -102,12 +102,16 @@ class AuthService {
 
   Future<void> changePassword(BuildContext context, String oldPassword, String newPassword) async {
     try {
-      await reauthenticate(context, oldPassword);
-      await _auth.currentUser!
-          .updatePassword(newPassword)
-          .then((value) => Navigator.of(context).pop(true))
-          .then((value) => ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text("Password changed successfully"))));
+      await reauthenticate(context, oldPassword).then((value) => {
+            if (value)
+              {
+                _auth.currentUser!
+                    .updatePassword(newPassword)
+                    .then((value) => Navigator.of(context).pop(true))
+                    .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Password changed successfully"))))
+              }
+          });
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -117,17 +121,19 @@ class AuthService {
     }
   }
 
-  Future<void> reauthenticate(BuildContext context, String password) async {
+  Future<bool> reauthenticate(BuildContext context, String password) async {
     try {
       final User user = _auth.currentUser!;
       await user.reauthenticateWithCredential(
           EmailAuthProvider.credential(email: user.email!, password: password));
+      return true;
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getAuthErrorMessage(e))));
+      return false;
     }
   }
 
-  Future<void> reauthenticateGoogleUser(BuildContext context) async {
+  Future<bool> reauthenticateGoogleUser(BuildContext context) async {
     try {
       // Mobile version of Google reauthentication
       if (!kIsWeb) {
@@ -143,11 +149,13 @@ class AuthService {
             idToken: googleAuth.idToken,
           );
           await user.reauthenticateWithCredential(credential);
+          return true;
         }
       } else {
         // Web version of Google reauthentication
         GoogleAuthProvider authProvider = GoogleAuthProvider();
         await _auth.currentUser!.reauthenticateWithPopup(authProvider);
+        return true;
       }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -155,7 +163,9 @@ class AuthService {
           content: Text(getGoogleAuthErrorMessage(e)),
         ),
       );
+      return false;
     }
+    return false;
   }
 
   Future<void> signOut(BuildContext context) async {

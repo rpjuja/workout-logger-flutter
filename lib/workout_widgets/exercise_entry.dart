@@ -58,7 +58,7 @@ class ExerciseEntry extends StatelessWidget {
       shadowColor: Colors.deepPurple[300]?.withOpacity(0.5),
       child: Row(children: [
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.35,
+          width: MediaQuery.of(context).size.width * 0.325,
           child: Padding(
               padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
               child: Container(
@@ -77,7 +77,8 @@ class ExerciseEntry extends StatelessWidget {
           child: Text(shortestHyphenLongestSet()),
         ),
         Container(
-          width: MediaQuery.of(context).size.width * 0.25,
+          width: MediaQuery.of(context).size.width * 0.275,
+          padding: const EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 10.0),
           alignment: Alignment.center,
           child: Text(leastHyphenMostWeight()),
         ),

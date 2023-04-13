@@ -69,7 +69,7 @@ class _ExerciseListState extends State<ExerciseList> {
       (event) {
         if (event.snapshot.exists) {
           Map<String, dynamic> exercises = Map<String, dynamic>.from(event.snapshot.value as Map);
-          _printExercises(exercises);
+          _addExercises(exercises);
         } else {
           setState(() {
             _exerciseList.clear();
@@ -90,7 +90,7 @@ class _ExerciseListState extends State<ExerciseList> {
     );
   }
 
-  void _printExercises(Map<String, dynamic> exercises) {
+  void _addExercises(Map<String, dynamic> exercises) {
     _exerciseList.clear();
     setState(() {
       exercises.forEach((key, value) {
